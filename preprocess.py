@@ -24,8 +24,7 @@ from sister.sensors import desis
 
 def main():
     '''
-    This function is a comman line wrapper around the PRISMA hdf to envi converter
-    function he5_to_envi and generates the following files:
+    This function is a exports the follwing files, given a DESIS or PRISMA radiance file:
 
         *_rad* : Merged and optionally shift corrected radiance cube
         *_obs* : Observables file in the format of JPL obs files:
