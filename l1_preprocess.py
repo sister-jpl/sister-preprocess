@@ -58,7 +58,7 @@ def main():
                   "%s/prs%s_l1p/" %  (os.path.dirname(l1p_dir),datetime))
 
 
-   elif base_name.startswith('ang') or base_name.startswith('f'):
+    elif base_name.startswith('ang') or base_name.startswith('f'):
         aviris.preprocess(args.l1_file,args.out_dir,args.temp_dir,
                           res = args.resolution)
 
@@ -75,8 +75,6 @@ def main():
                       "%s/%s" % (l1p_dir,new_file))
         os.rename(l1p_dir,
                   "%s/des%s_l1p" %  (os.path.dirname(l1p_dir),datetime))
-
-
 
     else:
         print('Unrecognized input sensor')
