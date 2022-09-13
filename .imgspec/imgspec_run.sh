@@ -28,7 +28,7 @@ if [[ $base == PRS* ]]; then
     rm output/*/*.csv
 
 else
-    python ${pge_dir}/scripts/l1_preprocess.py $input_file output/ temp/ $1
+    python ${pge_dir}/l1_preprocess.py $input_file output/ temp/ $1
 
     if [[ $base == DESIS* ]]; then
         datetime=$(echo $base | cut -c32-46)
