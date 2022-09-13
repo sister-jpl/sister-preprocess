@@ -21,7 +21,7 @@ if [[ $base == PRS* ]]; then
     rdn_coeffs=${pge_dir}/data/prisma/*_radcoeff_surface.npz
     smile=${pge_dir}/data/prisma/*_wavelength_shift_surface_smooth.npz
     prisma_zip=input/*.zip
-    python ${pge_dir}/scripts/l1_preprocess.py $prisma_zip output/ temp/ $1 $smile $rdn_coeffs $landsat
+    python ${pge_dir}/l1_preprocess.py $prisma_zip output/ temp/ $1 $smile $rdn_coeffs $landsat
     datetime=$(echo $(sed 's/.\{6\}$/T&/' <<< $(echo $base | cut -c17-30)))
     file_base=SISTER_PRISMA_${datetime}_L1B
     rm output/*/*.log
