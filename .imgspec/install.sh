@@ -7,7 +7,7 @@ conda create -y --name sister python=3.8
 source activate sister
 conda install -y gdal
 conda install -y -c conda-forge awscli
-#conda install -y -c bioconda rename
 
-cd $pge_dir
+git clone https://github.com/EnSpec/sister.git
+cd sister
 pip install .
