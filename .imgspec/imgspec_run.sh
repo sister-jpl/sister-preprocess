@@ -1,24 +1,65 @@
 #!/bin/bash
-# arg1: Output resolution in meters, should be a multiple of 30 (ex. 30,60,90.....)
 
-imgspec_dir=$( cd "$(dirname "$0")" ; pwd -P )
-sister_dir=$(dirname ${imgspec_dir})
+imgspec_dir=$(cd "$(dirname "$0")" ; pwd -P)
+pge_dir=$(dirname ${imgspec_dir})
 
-aws_cop_url='https://copernicus-dem-30m.s3.amazonaws.com/'
-shift_surface='https://github.com/EnSpec/sister/raw/master/data/prisma/wavelength_shift/PRISMA_20200721104249_20200721104253_0001_wavelength_shift_surface'
-output_dir='output'
-temp_dir='tmp'
-l1_zip=input/PRS*.zip
+source activate sister
+mkdir output temp
 
-mkdir -p $output_dir
-mkdir -p $temp_dir
+input_file=input/*.*
+input_file=$(ls input/*.* | tail -n 1)
 
-# Run PRISMA PGE, export rdn, obs and loc ENVI files
-python ${sister_dir}/scripts/prisma/preprocess.py $l1_zip $output_dir $temp_dir $aws_cop_url -proj -res $1 -shift $shift_surface
+echo $input_file
+base=$(basename $input_file)
 
-# gzip output files in preparation for downstream processing
-cd $output_dir
-l1_output_dir=$(ls -d PRS*)
-tar -cf ${l1_output_dir}.tar ${l1_output_dir}
-rm -rf $l1_output_dir
-gzip ${l1_output_dir}.tar
+if [[ $base == PRS* ]]; then
+    echo $2
+    aws s3 cp $2 ./input
+    lst_archive=$(ls input/*landsat.tar.gz)
+    tar -xzvf $lst_archive -C input/
+    landsat=$(ls input/*landsat)
+    rdn_coeffs=${pge_dir}/data/prisma/*_radcoeff_surface.npz
+    smile=${pge_dir}/data/prisma/*_wavelength_shift_surface_smooth.npz
+    prisma_zip=input/*.zip
+    python ${pge_dir}/scripts/l1_preprocess.py $prisma_zip output/ temp/ $1 $smile $rdn_coeffs $landsat
+    datetime=$(echo $(sed 's/.\{6\}$/T&/' <<< $(echo $base | cut -c17-30)))
+    file_base=SISTER_PRISMA_${datetime}_L1B
+    rm output/*/*.log
+    rm output/*/*.csv
+
+else
+    python ${pge_dir}/scripts/l1_preprocess.py $input_file output/ temp/ $1
+
+    if [[ $base == DESIS* ]]; then
+        datetime=$(echo $base | cut -c32-46)
+        file_base=SISTER_DESIS_${datetime}_L1B
+    fi
+fi
+
+# Rename PRISMA and DESIS files
+if [[ $base == PRS* ]] || [[ $base == DESIS* ]]; then
+
+    mv output/*/ output/${file_base}_RDN_000
+
+    mv output/${file_base}_RDN_000/*rdn_prj.hdr output/${file_base}_RDN_000/${file_base}_RDN_000.hdr
+    mv output/${file_base}_RDN_000/*rdn_prj output/${file_base}_RDN_000/${file_base}_RDN_000
+
+    mv output/${file_base}_RDN_000/*obs_prj.hdr output/${file_base}_RDN_000/${file_base}_OBS_000.hdr
+    mv output/${file_base}_RDN_000/*obs_prj output/${file_base}_RDN_000/${file_base}_OBS_000
+
+    mv output/${file_base}_RDN_000/*loc_prj.hdr output/${file_base}_RDN_000/${file_base}_LOC_000.hdr
+    mv output/${file_base}_RDN_000/*loc_prj output/${file_base}_RDN_000/${file_base}_LOC_000
+fi
+
+cd output
+
+# Future....replace placeholder with CRID, bad practice runs twice first the foldername is changed then the files...
+# should only be needed for AVIRIS data, CRID can be used when renaming DESIS and PRISMA imagery
+# maybe not needed can pass CRID pge script and use for AVIRIS renaming
+#find . -iname "*_000*" | rename 's/\_000/\_CRID/g';
+#find . -iname "*_000*" | rename 's/\_000/\_CRID/g';
+
+out_dir=$(ls ./)
+
+tar -czvf ${out_dir}.tar.gz ${out_dir}
+rm -r ${out_dir}
