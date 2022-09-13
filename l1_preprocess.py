@@ -25,23 +25,6 @@ import sister
 from sister.sensors import prisma,aviris,desis
 
 
-args.l1_file = '/Users/achlus/data1/desis/raw/DESIS-HSI-L1C-DT0696263016_002-20220307T001904-V0215.zip'
-args.out_dir = '/Users/achlus/data1/desis/rdn/'
-args.temp_dir = '/Users/achlus/data1/temp/'
-
-args.l1_file = '/Users/achlus/data1/prisma/raw/PRS_L1_STD_OFFL_20211003070847_20211003070852_0001.zip'
-args.out_dir = '/Users/achlus/data1/prisma/rdn/'
-args.temp_dir = '/Users/achlus/data1/temp/'
-
-
-
-args.l1_file = '/Users/achlus/data1/ang/raw/ang20191027t204454.tar.gz'
-args.out_dir = '/Users/achlus/data1/ang/rdn/'
-args.temp_dir = '/Users/achlus/data1/temp/'
-args.resolution = 30
-
-
-
 def main():
     parser = argparse.ArgumentParser(description = "Convert PRISMA HDF to ENVI format")
     parser.add_argument('l1_file',help="Path to compressed input file", type = str)
