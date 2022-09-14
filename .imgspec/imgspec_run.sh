@@ -61,5 +61,8 @@ cd output
 
 out_dir=$(ls ./)
 
+#Generate metadata
+python generate_metadata.py output/*/*RDN*.hdr output
 tar -czvf ${out_dir}.tar.gz ${out_dir}
+
 rm -r ${out_dir}
