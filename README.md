@@ -71,8 +71,6 @@ In addition to required MAAP job submission arguments the L1 preprocess PGE also
 |---|---|---|---|
 | l1_granule| string |URL to input L1 dataset granule| -|
 | landsat | string |URL to composite Landsat reference image, required only for PRISMA datasets| 'None'|
-| resolution| integer |Ouput pixel resolution in meters. Applies only to AVIRIS sensors, PRISMA and DESIS datasets are output at native resolution of 30m | 30|
-
 
 ## Outputs
 
@@ -128,12 +126,11 @@ for example:
 
 ### AVCL, AVNG, DESIS
 
-Landsat argument not required, will default to 'None'. Resolution argument ignored for DESIS.
+Landsat argument not required, will default to 'None'.
 
  	l1p_job_response = maap.submitJob(algo_id="sister-l1_preprocess",
 										    version="1.0.0",
 										    l1_granule= 'ang20170827t175432.tar',
-										    resolution=30,
 										    publish_to_cmr=False,
 										    cmr_metadata={},
 										    queue="sister-job_worker-32gb",
