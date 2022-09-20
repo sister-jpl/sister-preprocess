@@ -8,6 +8,6 @@ source activate sister
 conda install -y gdal
 conda install -y -c conda-forge awscli
 
-git clone https://github.com/EnSpec/sister.git
+git clone -b sister-dev https://github.com/EnSpec/sister.git
 cd sister
 pip install .
