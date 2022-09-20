@@ -37,6 +37,9 @@ File example:
 
 Preprocessing of AVNG also includes optional spatial resampling. Spatial resampling is performed by aggregationg and averaging pixels to the closest resolution to the target resolution. For example, for a target pixel size of 30m and source pixel size of 5.6m, pixel will be averaged in 5x5 blocks of pixels for an output resolution of 28m.
 
+![AVng preprocess workflow](./figures/avng_workflow.svg)
+
+
 ### DESIS (DESIS)
 
 ---
