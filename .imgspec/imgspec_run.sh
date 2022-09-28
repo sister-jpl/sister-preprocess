@@ -39,7 +39,11 @@ cd output
 out_dir=$(ls ./)
 tar -czvf ${out_dir}.tar.gz ${out_dir}
 
-#Generate metadata
+# Create metadata
 python ${imgspec_dir}/generate_metadata.py */*RDN*.hdr .
+
+# Create quicklook
+python ${imgspec_dir}/generate_quicklook.py $(ls input/*/*RDN* | grep -v '.hdr') .
+
 
 rm -r ${out_dir}
