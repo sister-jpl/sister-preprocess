@@ -7,6 +7,4 @@ conda create -y --name sister python=3.8
 source activate sister
 conda install -y gdal
 
-git clone -b sister-dev https://github.com/EnSpec/sister.git
-cd sister
-pip install .
+pip install -r ${pge_dir}/requirements.txt
