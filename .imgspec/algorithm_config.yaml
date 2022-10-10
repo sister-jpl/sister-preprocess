@@ -4,7 +4,7 @@ algo_name: sister-preprocess
 version: sister-dev
 environment: ubuntu
 repository_url: https://github.com/EnSpec/sister-preprocess.git
-docker_url: registry.imgspec.org/root/ade_base_images/vanilla:1.0
+docker_url: mas.dit.maap-project.org/root/maap-workspaces/base_images/vanilla:dit
 
 # fill out these fields
 # explain what this algorithm does
