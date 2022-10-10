@@ -22,6 +22,7 @@ File example:
 	f080709t01p00r15.tar.gz
 
 Preprocessing of AVCL data includes application of radiance gains to generate radiance data in the units of microwatts per centimeter squared per steradian (μW/cm<sup>2</sup>/sr). Preprocessing of AVCL also includes optional spatial resampling. Spatial resampling is performed by aggregating and averaging pixels followed by a nearest neighbor resampling to the target resolution.
+
 ![AVCL preprocess workflow](./figures/avcl_workflow.svg)
 
 ### AVIRIS Next Generation (AVNG)
