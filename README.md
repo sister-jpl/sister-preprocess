@@ -23,6 +23,7 @@ File example:
 
 Preprocessing of AVCL data includes application of radiance gains to generate radiance data in the units of microwatts per centimeter squared per steradian (μW/cm<sup>2</sup>/sr). Preprocessing of AVCL also includes optional spatial resampling. Spatial resampling is performed by aggregationg and averaging pixels to the closest resolution to the target resolution. For example, for a target pixel size of 30m and source pixel size of 16m, pixels will be averaged in 2x2 blocks of pixels for an output resolution of 30m.
 
+![AVCL preprocess workflow](./figures/avcl_workflow.svg)
 
 ### AVIRIS Next Generation (AVNG)
 
@@ -35,6 +36,9 @@ File example:
 		ang20191027t204454.tar.gz
 
 Preprocessing of AVNG also includes optional spatial resampling. Spatial resampling is performed by aggregationg and averaging pixels to the closest resolution to the target resolution. For example, for a target pixel size of 30m and source pixel size of 5.6m, pixel will be averaged in 5x5 blocks of pixels for an output resolution of 28m.
+
+![AVng preprocess workflow](./figures/avng_workflow.svg)
+
 
 ### DESIS (DESIS)
 
@@ -113,6 +117,38 @@ All outputs of the L1 PGE processor are compressed into a single tar.gz file usi
 for example:
 
 	 	SISTER_AVNG_20220502T180901_L1B_RDN_001.tar.gz
+
+## Algorithm registration
+
+	from maap.maap import MAAP
+	maap = MAAP(maap_host="sister-api.imgspec.org")
+	
+	preprocess_alg = {
+	    "script_command": "sister-preprocess/.imgspec/imgspec_run.sh",
+	    "repo_url": "https://github.com/EnSpec/sister-preprocess.git",
+	    "algorithm_name":"sister-preprocess",
+	    "code_version":"1.0.0",
+	    "algorithm_description":"Preprocess L1 image data for input into downstream algorithms",
+	    "environment_name":"ubuntu",
+	    "disk_space":"50GB",
+	    "queue": "sister-job_worker-32gb",
+	    "build_command": "sister-preprocess/.imgspec/install.sh",
+	    "docker_container_url": docker_container_url,
+	    "algorithm_params":[
+	        {
+	            "field": "l1_granule",
+	            "type": "file"
+	        },
+	          {
+	            "field": "landsat",
+	            "type": "positional",
+	            "default": "None"
+	        }
+	    ]
+	}
+	
+	response = maap.registerAlgorithm(arg=preprocess_alg)
+
 
 ## Examples
 

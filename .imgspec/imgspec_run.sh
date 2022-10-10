@@ -14,7 +14,7 @@ base=$(basename $input_file)
 
 if [[ $base == PRS* ]]; then
     echo $2
-    aws s3 cp $2 ./input
+    wget $2 -P ./input
     lst_archive=$(ls input/*landsat.tar.gz)
     tar -xzvf $lst_archive -C input/
     landsat=$(ls input/*landsat)
@@ -39,7 +39,11 @@ cd output
 out_dir=$(ls ./)
 tar -czvf ${out_dir}.tar.gz ${out_dir}
 
-#Generate metadata
+# Create metadata
 python ${imgspec_dir}/generate_metadata.py */*RDN*.hdr .
+# Create quicklook
+python ${imgspec_dir}/generate_quicklook.py $(ls */*RDN* | grep -v '.hdr') .
 
 rm -r ${out_dir}
+
+cp ../run.log ${out_dir}.log
