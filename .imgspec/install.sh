@@ -9,4 +9,4 @@ conda install -y gdal
 
 git clone -b 1.1.0  https://github.com/EnSpec/sister.git
 cd sister
-pip .
+pip install .
