@@ -21,8 +21,7 @@ File example:
 
 	f080709t01p00r15.tar.gz
 
-Preprocessing of AVCL data includes application of radiance gains to generate radiance data in the units of microwatts per centimeter squared per steradian (μW/cm<sup>2</sup>/sr). Preprocessing of AVCL also includes optional spatial resampling. Spatial resampling is performed by aggregationg and averaging pixels to the closest resolution to the target resolution. For example, for a target pixel size of 30m and source pixel size of 16m, pixels will be averaged in 2x2 blocks of pixels for an output resolution of 30m.
-
+Preprocessing of AVCL data includes application of radiance gains to generate radiance data in the units of microwatts per centimeter squared per steradian (μW/cm<sup>2</sup>/sr). Preprocessing of AVCL also includes optional spatial resampling. Spatial resampling is performed by aggregating and averaging pixels followed by a nearest neighbor resampling to the target resolution.
 ![AVCL preprocess workflow](./figures/avcl_workflow.svg)
 
 ### AVIRIS Next Generation (AVNG)
@@ -35,7 +34,7 @@ File example:
 
 		ang20191027t204454.tar.gz
 
-Preprocessing of AVNG also includes optional spatial resampling. Spatial resampling is performed by aggregationg and averaging pixels to the closest resolution to the target resolution. For example, for a target pixel size of 30m and source pixel size of 5.6m, pixel will be averaged in 5x5 blocks of pixels for an output resolution of 28m.
+Preprocessing of AVNG also includes optional spatial resampling. Spatial resampling is performed by aggregating and averaging pixels followed by a nearest neighbor resampling to the target resolution.
 
 ![AVng preprocess workflow](./figures/avng_workflow.svg)
 
