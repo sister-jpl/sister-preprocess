@@ -13,13 +13,13 @@ echo $input_file
 base=$(basename $input_file)
 
 if [[ $base == PRS* ]]; then
-    echo $2
-    wget $2 -P ./input
+    echo $1
+    wget $1 -P ./input
     lst_archive=$(ls input/*landsat.tar.gz)
     tar -xzvf $lst_archive -C input/
     landsat=$(ls input/*landsat)
-    rdn_coeffs=${pge_dir}/data/prisma/*_radcoeff_surface.npz
-    smile=${pge_dir}/data/prisma/*_wavelength_shift_surface_smooth.npz
+    rdn_coeffs=${imgspec_dir}/sister/data/prisma/*_radcoeff_surface.npz
+    smile=${imgspec_dir}/sister/data/prisma/*_wavelength_shift_surface_smooth.npz
     prisma_zip=input/*.zip
     python ${pge_dir}/l1_preprocess.py $prisma_zip output/ temp/ 30 $smile $rdn_coeffs $landsat
     rm output/*/*.log
