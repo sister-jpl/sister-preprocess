@@ -18,8 +18,8 @@ if [[ $base == PRS* ]]; then
     lst_archive=$(ls input/*landsat.tar.gz)
     tar -xzvf $lst_archive -C input/
     landsat=$(ls input/*landsat)
-    rdn_coeffs=${imgspec_dir}/sister/data/prisma/*_radcoeff_surface.npz
-    smile=${imgspec_dir}/sister/data/prisma/*_wavelength_shift_surface_smooth.npz
+    rdn_coeffs=${pge_dir}/data/prisma/*_radcoeff_surface.npz
+    smile=${pge_dir}/data/prisma/*_wavelength_shift_surface_smooth.npz
     prisma_zip=input/*.zip
     python ${pge_dir}/l1_preprocess.py $prisma_zip output/ temp/ 30 $smile $rdn_coeffs $landsat
     rm output/*/*.log
@@ -28,12 +28,6 @@ if [[ $base == PRS* ]]; then
 else
     python ${pge_dir}/l1_preprocess.py $input_file output/ temp/ 30
 fi
-
-# Future....replace placeholder with CRID, bad practice runs twice first the foldername is changed then the files...
-# should only be needed for AVIRIS data, CRID can be used when renaming DESIS and PRISMA imagery
-# maybe not needed can pass CRID pge script and use for AVIRIS renaming
-#find . -iname "*_000*" | rename 's/\_000/\_CRID/g';
-#find . -iname "*_000*" | rename 's/\_000/\_CRID/g';
 
 cd output
 out_dir=$(ls ./)
