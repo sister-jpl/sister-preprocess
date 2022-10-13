@@ -5,17 +5,6 @@ SISTER
 Space-based Imaging Spectroscopy and Thermal PathfindER
 Author: Adam Chlus
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, version 3 of the License.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import argparse
@@ -50,7 +39,7 @@ def main():
 
 
         l1p_dir = glob.glob("%s/PRS*" % args.out_dir)[0]
-        datetime =  "%sT%s" %  (base_name[31:39],base_name[39:45])
+        datetime =  "%sT%s" %  (base_name[16:24],base_name[24:30])
         sensor = 'PRISMA'
 
     elif base_name.startswith('ang') or base_name.startswith('f'):
@@ -63,7 +52,6 @@ def main():
                            aws_cop_url)
 
         l1p_dir = glob.glob("%s/DESIS*" % args.out_dir)[0]
-        date = base_name[31:39]
 
         # Get starting time of image acquisition
         header_file = glob.glob(l1p_dir + "/*rdn_prj.hdr")[0]
