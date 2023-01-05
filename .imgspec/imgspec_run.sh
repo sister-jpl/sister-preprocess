@@ -21,7 +21,7 @@ if [[ $base == PRS* ]]; then
     rdn_coeffs=${pge_dir}/data/prisma/*_radcoeff_surface.npz
     smile=${pge_dir}/data/prisma/*_wavelength_shift_surface_smooth.npz
     prisma_zip=input/*.zip
-    python ${pge_dir}/l1_preprocess.py $prisma_zip output/ temp/ $smile $rdn_coeffs $landsat
+    python ${pge_dir}/l1_preprocess.py $prisma_zip output/ temp/ 30 $smile $rdn_coeffs $landsat
     rm output/*/*.log
     rm output/*/*.csv
 
