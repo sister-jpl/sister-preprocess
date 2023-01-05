@@ -31,14 +31,14 @@ fi
 
 cd output
 out_dir=$(ls ./)
-# tar -czvf ${out_dir}.tar.gz ${out_dir}
 
 # Create metadata
 python ${imgspec_dir}/generate_metadata.py */*RDN*.hdr .
 # Create quicklook
 python ${imgspec_dir}/generate_quicklook.py $(ls */*RDN* | grep -v '.hdr') .
 
-mv ${out_dir}/* .
-rm -r ${out_dir}
+mv ${out_dir} l1p
+mv l1p/* .
+rm -r l1p
 
 cp ../run.log ${out_dir}.log
