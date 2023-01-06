@@ -11,6 +11,11 @@ import json
 
 
 def main():
+    '''
+        This function takes as input the path to a inputs.json file and exports a run config json
+        containing the arguments need to run the L1 preprocess PGE.
+
+    '''
 
     inputs_json  = sys.argv[1]
 
