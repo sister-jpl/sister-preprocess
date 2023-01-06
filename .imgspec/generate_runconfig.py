@@ -20,11 +20,17 @@ def main():
     run_config = {"inputs":{}}
 
     for file_dict in inputs["file"]:
-        for key,value in file.items():
+        for key,value in file_dict.items():
             run_config["inputs"][key] = value
 
     for key,value in inputs['config'].items():
         run_config["inputs"][key] = value
+
+    config_file = 'run_config.json'
+
+    with open(config_file, 'w') as outfile:
+        json.dump(run_config,outfile,indent=3)
+
 
 
 if __name__=='__main__':

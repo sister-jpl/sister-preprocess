@@ -1,0 +1,2 @@
+{"file": [{"l1_granule": "https://sister-ops-workspace.s3.us-west-2.amazonaws.com/prisma/raw/PRS_L1_STD_OFFL_20200702131858_20200702131903_0001.zip"}], "config": {            
+"landsat": "https://sister-ops-workspace.s3.us-west-2.amazonaws.com/prisma/landsat_reference/PRS_20200702131858_20200702131903_0001_landsat.tar.gz"}}
