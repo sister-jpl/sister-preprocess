@@ -10,3 +10,8 @@ conda install -y gdal
 git clone -b sister-dev https://github.com/EnSpec/sister.git
 cd sister
 pip install .
+
+git clone https://github.com/EnSpec/hytools.git
+cd hytools
+pip install .
+
