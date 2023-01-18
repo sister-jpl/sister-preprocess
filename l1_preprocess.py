@@ -121,7 +121,7 @@ def main():
                           'output/')
 
     shutil.copyfile(run_config_json,
-                    'output/%s_runconfig.json' % os.path.basename(rdn_file)[:-4])
+                    'output/%s.runconfig.json' % os.path.basename(rdn_file)[:-4])
 
 
 def generate_quicklook(input_file,output_dir):
