@@ -11,8 +11,8 @@ import json
 
 def main():
     '''
-        This function takes as input the path to a inputs.json file and exports a run config json
-        containing the arguments need to run the L1 preprocess PGE.1
+        This function takes as input the path to an inputs.json file and exports a run config json
+        containing the arguments needed to run the L1 preprocess PGE.
 
     '''
 
@@ -29,7 +29,7 @@ def main():
 
     run_config["inputs"].update(inputs["config"])
 
-    config_file = 'run_config.json'
+    config_file = 'runconfig.json'
 
     with open(config_file, 'w') as outfile:
         json.dump(run_config,outfile,indent=3)
