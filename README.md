@@ -82,18 +82,22 @@ In addition to required MAAP job submission arguments the L1 preprocess PGE also
 
 The L1B preprocess PGE exports 3 ENVI formatted datacubes along with their associated header files. The outputs of the PGE use the following naming convention:
 
-		SISTER_INSTRUMENT_YYYYMMDDTHHMMSS_L1B_SUBPRODUCT_CRID
+		SISTER_<SENSOR>_L1B_RDN_<YYYYMMDDTHHMMSS>_CRID.bin
+		SISTER_<SENSOR>_L1B_RDN_<YYYYMMDDTHHMMSS>_CRID_LOC.bin
+		SISTER_<SENSOR>_L1B_RDN_<YYYYMMDDTHHMMSS>_CRID_OBS.bin
+
+Additionally, a false color quicklook PNG image is produced of the radiance image using wavelengths 560, 850 and 660 nm for DESIS and 560, 850, 1600 nm for all other sensors.
 
 |Product name| Description |  Units | Example filename
 |---|---|---|---|
-| RDN| ENVI Radiance datacube |μW/cm<sup>2</sup>/sr|   SISTER_AVNG\_20220502T180901\_L1B\_RDN\_001 |
-| RDN  .hdr| ENVI Radiance header file  | - |  SISTER_AVNG\_20220502T180901\_L1B\_RDN\_001.hdr|
-| LOC| ENVI Location datacube |-|  SISTER_AVNG\_20220502T180901\_L1B\_LOC\_001 |
+|\*RDN\*.bin| ENVI Radiance datacube |μW/cm<sup>2</sup>/sr|   SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001 |
+|\*RDN\*.hdr| ENVI Radiance header file  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.hdr|
+|\*LOC\*.bin| ENVI Location datacube |-|  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_LOC.bin |
 | | 1. WGS-84 longitude |decimal degrees|
 | | 2. WGS-84 latitude |decimal degrees|
 | | 3. Ground elevation |meters|
-| LOC .hdr| ENVI Location header file  | - |  SISTER_AVNG\_20220502T180901\_L1B\_RDN\_001.hdr |
-| OBS| ENVI Observation datacube |-|  SISTER_AVNG\_20220502T180901\_L1B\_OBS\_001 |
+|\*LOC\*.hdr| ENVI Location header file  | - | SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_LOC.hdr |
+|\*OBS\*.bin| ENVI Observation datacube |-|  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_OBS.bin |
 | | 1. path length |meters|
 | | 2. to-sensor-azimuth |0 to 360 degrees clockwise N|
 | | 3. to-sensor-zenith |0 to 90 degrees from zenith|
@@ -105,18 +109,13 @@ The L1B preprocess PGE exports 3 ENVI formatted datacubes along with their assoc
 | | 9. cosine i |unitless|
 | | 10. UTC time |decimal hours|
 | | 11. Earth-sun distance |astronomical unit|
-|OBS .hdr| ENVI Observation header file  | - |  SISTER_AVNG\_20220502T180901\_L1B\_OBS\_001.hdr |
+|\*OBS\*.hdr| ENVI Observation header file  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_OBS.hdr |
+|\*\.png| Radiance quicklook  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.png |
+
 
 File and band descriptions taken directly from [AVIRIS NG Data Product Readme]
 (https://avirisng.jpl.nasa.gov/dataportal/ANG_L1B_L2_Data_Product_Readme_v02.txt)
 
-All outputs of the L1 PGE processor are compressed into a single tar.gz file using the following naming structure:
-
-	 	SISTER_INSTRUMENT_YYYYMMDDTHHMMSS_L1B_RDN_CRID.tar.gz
-
-for example:
-
-	 	SISTER_AVNG_20220502T180901_L1B_RDN_001.tar.gz
 
 ## Algorithm registration
 
@@ -124,15 +123,15 @@ for example:
 	maap = MAAP(maap_host="sister-api.imgspec.org")
 	
 	preprocess_alg = {
-	    "script_command": "sister-preprocess/.imgspec/imgspec_run.sh",
+	    "script_command": "sister-preprocess/pge_run.sh",
 	    "repo_url": "https://github.com/EnSpec/sister-preprocess.git",
 	    "algorithm_name":"sister-preprocess",
-	    "code_version":"1.0.0",
+	    "code_version":"2.0.0",
 	    "algorithm_description":"Preprocess L1 image data for input into downstream algorithms",
 	    "environment_name":"ubuntu",
 	    "disk_space":"50GB",
-	    "queue": "sister-job_worker-32gb",
-	    "build_command": "sister-preprocess/.imgspec/install.sh",
+	    "queue": "sister-job_worker-16gb",
+	    "build_command": "sister-preprocess/install.sh",
 	    "docker_container_url": docker_container_url,
 	    "algorithm_params":[
 	        {
@@ -141,9 +140,15 @@ for example:
 	        },
 	          {
 	            "field": "landsat",
-	            "type": "positional",
+	            "type": "config",
 	            "default": "None"
+	        },
+	          {
+	            "field": "CRID",
+	            "type": "config",
+	            "default": "000"
 	        }
+	    ]
 	    ]
 	}
 	
@@ -154,12 +159,13 @@ for example:
 
 ### PRISMA
 	l1p_job_response = maap.submitJob(algo_id="sister-l1_preprocess",
-										    version="1.0.0",
+										    version="2.0.0",
 										    l1_granule= 'PRS_L1_STD_OFFL_20200917091806_20200917091810_0001.zip',
 										    landsat='PRS_20200917091806_20200917091810_0001_landsat.tar.gz',
+										    CRID='001',
 										    publish_to_cmr=False,
 										    cmr_metadata={},
-										    queue="sister-job_worker-32gb",
+										    queue="sister-job_worker-16gb",
 										    identifier="l1_preprocess_PRISMA_20200917T091806")
 
 ### AVCL, AVNG, DESIS
@@ -167,9 +173,10 @@ for example:
 Landsat argument not required, will default to 'None'.
 
  	l1p_job_response = maap.submitJob(algo_id="sister-l1_preprocess",
-										    version="1.0.0",
+										    version="2.0.0",
 										    l1_granule= 'ang20170827t175432.tar',
+  										    CRID='001',
 										    publish_to_cmr=False,
 										    cmr_metadata={},
-										    queue="sister-job_worker-32gb",
+										    queue="sister-job_worker-16gb",
 										    identifier="l1_preprocess_AVNG_20170827T175432")
