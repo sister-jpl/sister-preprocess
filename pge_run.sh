@@ -2,12 +2,12 @@
 
 source activate sister
 
-ls -l
+pge_dir=$(cd "$(dirname "$0")" ; pwd -P)
 
-pwd
+cat inputs.json
 
 echo "Creating runconfig"
-python generate_runconfig.py inputs.json
+python ${pge_dir}/generate_runconfig.py inputs.json
 
 echo "Running L1 Preprocess PGE"
-python l1_preprocess.py runconfig.json
+python ${pge_dir}/l1_preprocess.py runconfig.json
