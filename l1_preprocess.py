@@ -108,14 +108,14 @@ def main():
                 ext = '.bin'
 
             old_file = os.path.basename(file)
-            new_file = 'SISTER_%s_L1B_RDN_%s_CRID%s%s' % (sensor,datetime,product,ext)
+            new_file = 'SISTER_%s_L1B_RDN_%s_000%s%s' % (sensor,datetime,product,ext)
 
             os.rename('%s/%s' % (l1p_dir,old_file),
                       'output/%s' % (new_file))
 
         shutil.rmtree(l1p_dir)
 
-    rdn_file =  glob.glob("output/*CRID.bin")[0]
+    rdn_file =  glob.glob("output/*000.bin")[0]
 
     generate_quicklook(rdn_file,'output/')
 
