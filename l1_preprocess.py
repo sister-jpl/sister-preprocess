@@ -22,7 +22,10 @@ from sister.utils import download_file
 
 def main():
 
+    pge_path = os.path.dirname(os.path.realpath(__file__))
+
     run_config_json = sys.argv[1]
+
 
     with open(run_config_json, 'r') as in_file:
         run_config =json.load(in_file)
@@ -36,8 +39,8 @@ def main():
 
     if base_name.startswith('PRS'):
 
-        smile = 'data/prisma/PRISMA_Mali1_wavelength_shift_surface_smooth.npz'
-        rad_coeff = 'data/prisma/PRS_Mali1_radcoeff_surface.npz'
+        smile = '%s/data/prisma/PRISMA_Mali1_wavelength_shift_surface_smooth.npz' % pge_path
+        rad_coeff = '%s/data/prisma/PRS_Mali1_radcoeff_surface.npz' % pge_path
 
         landsat_url = run_config['inputs']['landsat']
         landsat_tar = 'input/%s' % os.path.basename(landsat_url)
@@ -51,13 +54,13 @@ def main():
         landsat = landsat_tar[:-7]
 
         prisma.he5_to_envi('input/%s' % base_name,
-                           'output/',
-                           'temp/',
-                           aws_cop_url,
-                           shift = smile,
-                           rad_coeff =rad_coeff,
-                           proj = True,
-                           match=landsat)
+                            'output/',
+                            'temp/',
+                            aws_cop_url,
+                            shift = smile,
+                            rad_coeff =rad_coeff,
+                            proj = True,
+                            match=landsat)
 
         l1p_dir = glob.glob('output/PRS*')[0]
         datetime =  '%sT%s' %  (base_name[16:24],base_name[24:30])
@@ -65,17 +68,17 @@ def main():
 
     elif base_name.startswith('ang') or base_name.startswith('f'):
         aviris.preprocess('input/%s' % base_name,
-                           'output/',
-                           'temp/',
-                           res = 30)
+                            'output/',
+                            'temp/',
+                            res = 30)
         l1p_dir = glob.glob('output/S*')[0]
         sensor = os.path.basename(l1p_dir).split('_')[1]
 
     elif base_name.startswith('DESIS'):
         desis.l1c_process('input/%s' % base_name,
-                           'output/',
-                           'temp/',
-                           aws_cop_url)
+                            'output/',
+                            'temp/',
+                            aws_cop_url)
 
         l1p_dir = glob.glob('output/DESIS*')[0]
 
@@ -129,7 +132,7 @@ def generate_quicklook(input_file,output_dir):
     img = ht.HyTools()
     img.read_file(input_file)
     image_file ="%s/%s.png" % (output_dir,
-                               img.base_name)
+                                img.base_name)
 
     if 'DESIS' in img.base_name:
         band3 = img.get_wave(560)
