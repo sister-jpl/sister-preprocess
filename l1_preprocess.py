@@ -39,8 +39,8 @@ def main():
 
     if base_name.startswith('PRS'):
 
-        smile = '%s/data/prisma/PRISMA_Mali1_wavelength_shift_surface_smooth.npz' % pge_path
-        rad_coeff = '%s/data/prisma/PRS_Mali1_radcoeff_surface.npz' % pge_path
+        smile = f'{pge_path}/data/prisma/PRISMA_Mali1_wavelength_shift_surface_smooth.npz'
+        rad_coeff = f'{pge_path}/data/prisma/PRS_Mali1_radcoeff_surface.npz'
 
         landsat_url = run_config['inputs']['landsat']
         landsat_tar = 'input/%s' % os.path.basename(landsat_url)
@@ -53,7 +53,7 @@ def main():
 
         landsat = landsat_tar[:-7]
 
-        prisma.he5_to_envi('input/%s' % base_name,
+        prisma.he5_to_envi(f'input/{base_name}',
                             'output/',
                             'temp/',
                             aws_cop_url,
@@ -67,7 +67,7 @@ def main():
         sensor = 'PRISMA'
 
     elif base_name.startswith('ang') or base_name.startswith('f'):
-        aviris.preprocess('input/%s' % base_name,
+        aviris.preprocess(f'input/{base_name}',
                             'output/',
                             'temp/',
                             res = 30)
@@ -75,7 +75,7 @@ def main():
         sensor = os.path.basename(l1p_dir).split('_')[1]
 
     elif base_name.startswith('DESIS'):
-        desis.l1c_process('input/%s' % base_name,
+        desis.l1c_process(f'input/{base_name}',
                             'output/',
                             'temp/',
                             aws_cop_url)
@@ -108,7 +108,7 @@ def main():
                 ext = '.bin'
 
             old_file = os.path.basename(file)
-            new_file = 'SISTER_%s_L1B_RDN_%s_CRID%s%s' % (sensor,datetime,product,ext)
+            new_file = f'SISTER_{sensor}_L1B_RDN_{datetime}_CRID{product}{ext}'
 
             os.rename('%s/%s' % (l1p_dir,old_file),
                       'output/%s' % (new_file))
@@ -137,8 +137,7 @@ def generate_quicklook(input_file,output_dir):
 
     img = ht.HyTools()
     img.read_file(input_file)
-    image_file ="%s/%s.png" % (output_dir,
-                                img.base_name)
+    image_file =f"{output_dir}/{img.base_name}.png"
 
     if 'DESIS' in img.base_name:
         band3 = img.get_wave(560)
@@ -180,7 +179,7 @@ def generate_metadata(header_file,output_dir):
     metadata['product'] = base_name.split('_')[4]
     metadata['processing_level'] = base_name.split('_')[2]
 
-    config_file = '%s/%s.met.json' % (output_dir,base_name)
+    config_file = f'{output_dir}/{base_name}.met.json'
 
     with open(config_file, 'w') as outfile:
         json.dump(metadata,outfile,indent=3)
