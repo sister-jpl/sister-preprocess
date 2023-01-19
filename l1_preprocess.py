@@ -108,24 +108,30 @@ def main():
                 ext = '.bin'
 
             old_file = os.path.basename(file)
-            new_file = 'SISTER_%s_L1B_RDN_%s_000%s%s' % (sensor,datetime,product,ext)
+            new_file = 'SISTER_%s_L1B_RDN_%s_CRID%s%s' % (sensor,datetime,product,ext)
 
             os.rename('%s/%s' % (l1p_dir,old_file),
                       'output/%s' % (new_file))
 
         shutil.rmtree(l1p_dir)
 
-    rdn_file =  glob.glob("output/*000.bin")[0]
 
+
+    for dataset in glob.glob("output/SISTER*.bin"):
+        generate_metadata(dataset.replace('.bin','.hdr'),
+                                  'output/')
+
+    #Update CRID
+    for file in glob.glob("output/SISTER*"):
+
+        os.rename(file,file.replace('CRID',
+                                        str(run_config['inputs']['CRID'])))
+
+    rdn_file =  glob.glob("output/*%s.bin" % run_config['inputs']['CRID'])[0]
     generate_quicklook(rdn_file,'output/')
-
-    for file in glob.glob("output/*.bin"):
-        generate_metadata(file.replace('.bin','.hdr'),
-                          'output/')
 
     shutil.copyfile(run_config_json,
                     'output/%s.runconfig.json' % os.path.basename(rdn_file)[:-4])
-
 
 def generate_quicklook(input_file,output_dir):
 
