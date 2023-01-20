@@ -85,7 +85,7 @@ def main():
         # Get starting time of image acquisition
         header_file = glob.glob(l1p_dir + '/*rdn_prj.hdr')[0]
         header = parse_envi_header(header_file)
-        datetime =header['start acquisition time'].replace('-','').replace(':','')[:-1]
+        datetime =(header['start acquisition time'].replace('-','').replace(':','')[:-1]).upper()
         sensor = 'DESIS'
 
     else:
