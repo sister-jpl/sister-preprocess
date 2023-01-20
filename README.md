@@ -110,7 +110,7 @@ Additionally, a false color quicklook PNG image is produced of the radiance imag
 | | 10. UTC time |decimal hours|
 | | 11. Earth-sun distance |astronomical unit|
 |\*OBS\*.hdr| ENVI Observation header file  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_OBS.hdr |
-|\*\.png| Radiance quicklook  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.png |
+|\*\.png| Radiance PNG quicklook  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.png |
 
 
 File and band descriptions taken directly from [AVIRIS NG Data Product Readme]

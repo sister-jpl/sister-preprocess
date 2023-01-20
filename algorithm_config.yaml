@@ -23,7 +23,7 @@ inputs:
       required: True
 
   config:
-    - name: l1_granule
+    - name: landsat
       data_type:
       default: 'none'
       description:
