@@ -26,7 +26,6 @@ def main():
 
     run_config_json = sys.argv[1]
 
-
     with open(run_config_json, 'r') as in_file:
         run_config =json.load(in_file)
 
@@ -63,7 +62,7 @@ def main():
                             match=landsat)
 
         l1p_dir = glob.glob('output/PRS*')[0]
-        datetime =  '%sT%s' %  (base_name[16:24],base_name[24:30])
+        datetime = '%sT%s' %  (base_name[16:24],base_name[24:30])
         sensor = 'PRISMA'
 
     elif base_name.startswith('ang') or base_name.startswith('f'):
@@ -115,11 +114,10 @@ def main():
 
         shutil.rmtree(l1p_dir)
 
-
-
     for dataset in glob.glob("output/SISTER*.bin"):
         generate_metadata(dataset.replace('.bin','.hdr'),
                                   'output/')
+
 
     #Update CRID
     for file in glob.glob("output/SISTER*"):
@@ -132,6 +130,10 @@ def main():
 
     shutil.copyfile(run_config_json,
                     'output/%s.runconfig.json' % os.path.basename(rdn_file)[:-4])
+
+    shutil.copyfile('run.log',
+                    'output/%s.log' % os.path.basename(rdn_file)[:-4])
+
 
 def generate_quicklook(input_file,output_dir):
 
