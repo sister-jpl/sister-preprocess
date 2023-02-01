@@ -29,7 +29,7 @@ def main():
     with open(run_config_json, 'r') as in_file:
         run_config =json.load(in_file)
 
-    base_name = os.path.basename(run_config['inputs']['l1_granule'])
+    base_name = os.path.basename(run_config['inputs']['raw_dataset'])
 
     os.mkdir('output')
     os.mkdir('temp')
@@ -41,7 +41,7 @@ def main():
         smile = f'{pge_path}/data/prisma/PRISMA_Mali1_wavelength_shift_surface_smooth.npz'
         rad_coeff = f'{pge_path}/data/prisma/PRS_Mali1_radcoeff_surface.npz'
 
-        landsat_url = run_config['inputs']['landsat']
+        landsat_url = run_config['inputs']['landsat_dataset']
         landsat_tar = 'input/%s' % os.path.basename(landsat_url)
 
         download_file(landsat_tar,
@@ -107,7 +107,7 @@ def main():
                 ext = '.bin'
 
             old_file = os.path.basename(file)
-            new_file = f'SISTER_{sensor}_L1B_RDN_{datetime}_CRID{product}{ext}'
+            new_file = f'SISTER_{sensor}_L1B_RDN_{datetime}_crid{product}{ext}'
 
             os.rename('%s/%s' % (l1p_dir,old_file),
                       'output/%s' % (new_file))
@@ -118,14 +118,13 @@ def main():
         generate_metadata(dataset.replace('.bin','.hdr'),
                                   'output/')
 
-
-    #Update CRID
+    #Update crid
     for file in glob.glob("output/SISTER*"):
 
-        os.rename(file,file.replace('CRID',
-                                        str(run_config['inputs']['CRID'])))
+        os.rename(file,file.replace('crid',
+                                        str(run_config['inputs']['crid'])))
 
-    rdn_file =  glob.glob("output/*%s.bin" % run_config['inputs']['CRID'])[0]
+    rdn_file =  glob.glob("output/*%s.bin" % run_config['inputs']['crid'])[0]
     generate_quicklook(rdn_file,'output/')
 
     shutil.copyfile(run_config_json,

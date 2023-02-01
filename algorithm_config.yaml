@@ -17,16 +17,19 @@ disk_space: 50GB
 inputs:
 
   file:
-    - name: l1_granule
+    - name: raw_dataset
       description:
       required: True
 
   config:
-    - name: landsat
+    - name: landsat_dataset
       data_type:
       default: 'none'
       description:
-    - name: CRID
+    - name: crid
       data_type:
       default: '000'
       description:
+    - name: _force_ingest
+      data_type:
+      default: 'True'
