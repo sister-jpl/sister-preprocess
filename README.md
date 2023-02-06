@@ -75,8 +75,9 @@ In addition to required MAAP job submission arguments the L1 preprocess PGE also
 
 |Argument| Type |  Description | Default|
 |---|---|---|---|
-| l1_granule| string |URL to input L1 dataset granule| -|
-| landsat | string |URL to composite Landsat reference image, required only for PRISMA datasets| 'None'|
+| raw_dataset| string |URL to input raw dataset granule| -|
+| landsat_dataset | string |URL to composite Landsat reference image, required only for PRISMA datasets| 'None'|
+| cird| string | Composite release identifier| 000|
 
 ## Outputs
 
@@ -86,7 +87,7 @@ The L1B preprocess PGE exports 3 ENVI formatted datacubes along with their assoc
 		SISTER_<SENSOR>_L1B_RDN_<YYYYMMDDTHHMMSS>_CRID_LOC.bin
 		SISTER_<SENSOR>_L1B_RDN_<YYYYMMDDTHHMMSS>_CRID_OBS.bin
 
-Additionally, a false color quicklook PNG image is produced of the radiance image using wavelengths 560, 850 and 660 nm for DESIS and 560, 850, 1600 nm for all other sensors.
+Additionally, a false color quicklook PNG image is produced of the radiance image using wavelengths 560, 850 and 660 nm for DESIS and 560, 850, 1660 nm for all other sensors.
 
 |Product name| Description |  Units | Example filename
 |---|---|---|---|
@@ -119,50 +120,24 @@ File and band descriptions taken directly from [AVIRIS NG Data Product Readme]
 
 ## Algorithm registration
 
-	from maap.maap import MAAP
-	maap = MAAP(maap_host="sister-api.imgspec.org")
-	
-	preprocess_alg = {
-	    "script_command": "sister-preprocess/pge_run.sh",
-	    "repo_url": "https://github.com/EnSpec/sister-preprocess.git",
-	    "algorithm_name":"sister-preprocess",
-	    "code_version":"2.0.0",
-	    "algorithm_description":"Preprocess L1 image data for input into downstream algorithms",
-	    "environment_name":"ubuntu",
-	    "disk_space":"50GB",
-	    "queue": "sister-job_worker-16gb",
-	    "build_command": "sister-preprocess/install.sh",
-	    "docker_container_url": docker_container_url,
-	    "algorithm_params":[
-	        {
-	            "field": "l1_granule",
-	            "type": "file"
-	        },
-	          {
-	            "field": "landsat",
-	            "type": "config",
-	            "default": "None"
-	        },
-	          {
-	            "field": "CRID",
-	            "type": "config",
-	            "default": "000"
-	        }
-	    ]
-	    ]
-	}
-	
-	response = maap.registerAlgorithm(arg=preprocess_alg)
+This algorithm can be registered using the algorirthm_config.yml file found in this repository:
 
+	from maap.maap import MAAP
+	import IPython
+	
+	maap = MAAP(maap_host="sister-api.imgspec.org")
+
+	preprocess_alg_yaml = './sister-preprocess/algorithm_config.yaml'
+	maap.register_algorithm_from_yaml_file(file_path=preprocess_alg_yaml)
 
 ## Examples
 
 ### PRISMA
 	l1p_job_response = maap.submitJob(algo_id="sister-l1_preprocess",
 										    version="2.0.0",
-										    l1_granule= 'PRS_L1_STD_OFFL_20200917091806_20200917091810_0001.zip',
-										    landsat='PRS_20200917091806_20200917091810_0001_landsat.tar.gz',
-										    CRID='001',
+										    raw_dataset= 'PRS_L1_STD_OFFL_20200917091806_20200917091810_0001.zip',
+										    landsat_dataset='PRS_20200917091806_20200917091810_0001_landsat.tar.gz',
+										    crid='001',
 										    publish_to_cmr=False,
 										    cmr_metadata={},
 										    queue="sister-job_worker-16gb",
@@ -174,8 +149,8 @@ Landsat argument not required, will default to 'None'.
 
  	l1p_job_response = maap.submitJob(algo_id="sister-l1_preprocess",
 										    version="2.0.0",
-										    l1_granule= 'ang20170827t175432.tar',
-  										    CRID='001',
+										    raw_dataset= 'ang20170827t175432.tar',
+  										    crid='001',
 										    publish_to_cmr=False,
 										    cmr_metadata={},
 										    queue="sister-job_worker-16gb",

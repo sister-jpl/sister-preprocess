@@ -107,7 +107,7 @@ def main():
                 ext = '.bin'
 
             old_file = os.path.basename(file)
-            new_file = f'SISTER_{sensor}_L1B_RDN_{datetime}_crid{product}{ext}'
+            new_file = f'SISTER_{sensor}_L1B_RDN_{datetime}_CRID{product}{ext}'
 
             os.rename('%s/%s' % (l1p_dir,old_file),
                       'output/%s' % (new_file))
@@ -121,7 +121,7 @@ def main():
     #Update crid
     for file in glob.glob("output/SISTER*"):
 
-        os.rename(file,file.replace('crid',
+        os.rename(file,file.replace('CRID',
                                         str(run_config['inputs']['crid'])))
 
     rdn_file =  glob.glob("output/*%s.bin" % run_config['inputs']['crid'])[0]
