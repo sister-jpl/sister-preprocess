@@ -1,2 +1,0 @@
-# sister-preprocess dependencies
-sister-sbg==1.1.0
