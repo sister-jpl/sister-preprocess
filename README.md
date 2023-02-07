@@ -75,9 +75,9 @@ In addition to required MAAP job submission arguments the L1 preprocess PGE also
 
 |Argument| Type |  Description | Default|
 |---|---|---|---|
-| raw_dataset| string |URL to input raw dataset granule| -|
-| landsat_dataset | string |URL to composite Landsat reference image, required only for PRISMA datasets| 'None'|
-| cird| string | Composite release identifier| 000|
+| raw_dataset| file |URL to input raw dataset granule| -|
+| landsat_dataset | config |URL to composite Landsat reference image, required only for PRISMA datasets| 'None'|
+| crid| config | Composite release identifier| 000|
 
 ## Outputs
 
@@ -89,29 +89,34 @@ The L1B preprocess PGE exports 3 ENVI formatted datacubes along with their assoc
 
 Additionally, a false color quicklook PNG image is produced of the radiance image using wavelengths 560, 850 and 660 nm for DESIS and 560, 850, 1660 nm for all other sensors.
 
-|Product name| Description |  Units | Example filename
+|Product Description |  Units | Example filename
 |---|---|---|---|
-|\*RDN\*.bin| ENVI Radiance datacube |μW/cm<sup>2</sup>/sr|   SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001 |
-|\*RDN\*.hdr| ENVI Radiance header file  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.hdr|
-|\*LOC\*.bin| ENVI Location datacube |-|  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_LOC.bin |
-| | 1. WGS-84 longitude |decimal degrees|
-| | 2. WGS-84 latitude |decimal degrees|
-| | 3. Ground elevation |meters|
-|\*LOC\*.hdr| ENVI Location header file  | - | SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_LOC.hdr |
-|\*OBS\*.bin| ENVI Observation datacube |-|  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_OBS.bin |
-| | 1. path length |meters|
-| | 2. to-sensor-azimuth |0 to 360 degrees clockwise N|
-| | 3. to-sensor-zenith |0 to 90 degrees from zenith|
-| | 4. to-sun-azimuth |0 to 360 degrees clockwise N|
-| | 5. to-sun-zenith |0 to 90 degrees from zenith|
-| | 6. solar phase |degrees|
-| | 7. slope |decimal degrees|
-| | 8. aspect |0 to 360 degrees clockwise from N|
-| | 9. cosine i |unitless|
-| | 10. UTC time |decimal hours|
-| | 11. Earth-sun distance |astronomical unit|
-|\*OBS\*.hdr| ENVI Observation header file  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_OBS.hdr |
-|\*\.png| Radiance PNG quicklook  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.png |
+| ENVI Radiance datacube |μW/cm<sup>2</sup>/sr|   SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001 |
+| ENVI Radiance header file  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.hdr|
+| ENVI Radiance metadata  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.hdr|
+| Radiance PNG quicklook  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.png |
+| ENVI Location datacube |-|  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_LOC.bin |
+| 1. WGS-84 longitude |decimal degrees|
+| 2. WGS-84 latitude |decimal degrees|
+| 3. Ground elevation |meters|
+| ENVI Location header file  | - | SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_LOC.hdr |
+| ENVI Location metadata  | - | SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_LOC.met.json |
+| ENVI Observation datacube |-|  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_OBS.bin |
+| 1. path length |meters|
+| 2. to-sensor-azimuth |0 to 360 degrees clockwise N|
+| 3. to-sensor-zenith |0 to 90 degrees from zenith|
+| 4. to-sun-azimuth |0 to 360 degrees clockwise N|
+| 5. to-sun-zenith |0 to 90 degrees from zenith|
+| 6. solar phase |degrees|
+| 7. slope |decimal degrees|
+| 8. aspect |0 to 360 degrees clockwise from N|
+| 9. cosine i |unitless|
+| 10. UTC time |decimal hours|
+| 11. Earth-sun distance |astronomical unit|
+| ENVI Observation header file  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_OBS.hdr |
+| Observation metadata |-|  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.met.json |
+| PGE runconfig| - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.runconfig.json |
+| PGE log| - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.log |
 
 
 File and band descriptions taken directly from [AVIRIS NG Data Product Readme]
