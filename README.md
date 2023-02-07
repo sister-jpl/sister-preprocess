@@ -76,7 +76,7 @@ In addition to required MAAP job submission arguments the L1 preprocess PGE also
 |Argument| Type |  Description | Default|
 |---|---|---|---|
 | raw_dataset| file |URL to input raw dataset granule| -|
-| landsat_dataset | config |URL to composite Landsat reference image, required only for PRISMA datasets| 'None'|
+| landsat_dataset | config |URL to composite Landsat reference image, required only for PRISMA datasets| 'none'|
 | crid| config | Composite release identifier| 000|
 
 ## Outputs
@@ -139,24 +139,24 @@ This algorithm can be registered using the algorirthm_config.yml file found in t
 
 ### PRISMA
 	l1p_job_response = maap.submitJob(algo_id="sister-l1_preprocess",
-										    version="2.0.0",
-										    raw_dataset= 'PRS_L1_STD_OFFL_20200917091806_20200917091810_0001.zip',
-										    landsat_dataset='PRS_20200917091806_20200917091810_0001_landsat.tar.gz',
-										    crid='001',
-										    publish_to_cmr=False,
-										    cmr_metadata={},
-										    queue="sister-job_worker-16gb",
-										    identifier="l1_preprocess_PRISMA_20200917T091806")
+							    version="2.0.0",
+							    raw_dataset= 'PRS_L1_STD_OFFL_20200917091806_20200917091810_0001.zip',
+							    landsat_dataset='PRS_20200917091806_20200917091810_0001_landsat.tar.gz',
+							    crid='001',
+							    publish_to_cmr=False,
+							    cmr_metadata={},
+							    queue="sister-job_worker-16gb",
+							    identifier="l1_preprocess_PRISMA_20200917T091806")
 
 ### AVCL, AVNG, DESIS
 
 Landsat argument not required, will default to 'None'.
 
  	l1p_job_response = maap.submitJob(algo_id="sister-l1_preprocess",
-										    version="2.0.0",
-										    raw_dataset= 'ang20170827t175432.tar',
-  										    crid='001',
-										    publish_to_cmr=False,
-										    cmr_metadata={},
-										    queue="sister-job_worker-16gb",
-										    identifier="l1_preprocess_AVNG_20170827T175432")
+								    version="2.0.0",
+								    raw_dataset= 'ang20170827t175432.tar',
+								    crid='001',
+								    publish_to_cmr=False,
+								    cmr_metadata={},
+								    queue="sister-job_worker-16gb",
+								    identifier="l1_preprocess_AVNG_20170827T175432")
