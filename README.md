@@ -114,7 +114,7 @@ Additionally, a false color quicklook PNG image is produced of the radiance imag
 | 10. UTC time |decimal hours|
 | 11. Earth-sun distance |astronomical unit|
 | ENVI Observation header file  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_OBS.hdr |
-| Observation metadata |-|  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.met.json |
+| Observation metadata |-|  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_OBS.met.json |
 | PGE runconfig| - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.runconfig.json |
 | PGE log| - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.log |
 
