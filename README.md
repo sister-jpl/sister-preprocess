@@ -146,7 +146,7 @@ This algorithm can be registered using the algorirthm_config.yml file found in t
 							    publish_to_cmr=False,
 							    cmr_metadata={},
 							    queue="sister-job_worker-16gb",
-							    identifier="l1_preprocess_PRISMA_20200917T091806")
+							    identifier="SISTER_PRISMA_L1B_RDN_20170827T175432_001")
 
 ### AVCL, AVNG, DESIS
 
@@ -159,4 +159,4 @@ Landsat argument not required, will default to 'None'.
 								    publish_to_cmr=False,
 								    cmr_metadata={},
 								    queue="sister-job_worker-16gb",
-								    identifier="l1_preprocess_AVNG_20170827T175432")
+								    identifier="SISTER_AVNG_L1B_RDN_20170827T175432_001")
