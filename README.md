@@ -94,7 +94,7 @@ Additionally, a false color quicklook PNG image is produced of the radiance imag
 | ENVI Radiance datacube |μW/cm<sup>2</sup>/sr|   SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001 |
 | ENVI Radiance header file  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.hdr|
 | ENVI Radiance metadata  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.hdr|
-| Radiance PNG quicklook  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.png |
+| False color radiance quicklook  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.png |
 | ENVI Location datacube |-|  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_LOC.bin |
 | 1. WGS-84 longitude |decimal degrees|
 | 2. WGS-84 latitude |decimal degrees|
