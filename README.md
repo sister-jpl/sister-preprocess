@@ -77,19 +77,15 @@ In addition to required MAAP job submission arguments the L1 preprocess PGE also
 |---|---|---|---|
 | raw_dataset| file |URL to input raw dataset granule| -|
 | landsat_dataset | config |URL to composite Landsat reference image, required only for PRISMA datasets| 'none'|
-| crid| config | Composite release identifier| 000|
+| crid| config | Composite release identifier| '000'|
 
 ## Outputs
 
-The L1B preprocess PGE exports 3 ENVI formatted datacubes along with their associated header files. The outputs of the PGE use the following naming convention:
+The outputs of the L1B preprocess PGE use the following naming convention:
 
-		SISTER_<SENSOR>_L1B_RDN_<YYYYMMDDTHHMMSS>_CRID.bin
-		SISTER_<SENSOR>_L1B_RDN_<YYYYMMDDTHHMMSS>_CRID_LOC.bin
-		SISTER_<SENSOR>_L1B_RDN_<YYYYMMDDTHHMMSS>_CRID_OBS.bin
+    SISTER_<SENSOR>_L1B_RDN_<YYYYMMDDTHHMMSS>_<CRID>_<SUBPRODUCT>
 
-Additionally, a false color quicklook PNG image is produced of the radiance image using wavelengths 560, 850 and 660 nm for DESIS and 560, 850, 1660 nm for all other sensors.
-
-|Product Description |  Units | Example filename
+|Product description |  Units | Example filename
 |---|---|---|
 | ENVI Radiance datacube |μW/cm<sup>2</sup>/sr|   SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001 |
 | ENVI Radiance header file  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.hdr|
