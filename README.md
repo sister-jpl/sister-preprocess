@@ -75,101 +75,84 @@ In addition to required MAAP job submission arguments the L1 preprocess PGE also
 
 |Argument| Type |  Description | Default|
 |---|---|---|---|
-| l1_granule| string |URL to input L1 dataset granule| -|
-| landsat | string |URL to composite Landsat reference image, required only for PRISMA datasets| 'None'|
+| raw_dataset| file |URL to input raw dataset granule| -|
+| landsat_dataset | config |URL to composite Landsat reference image, required only for PRISMA datasets| 'none'|
+| crid| config | Composite release identifier| '000'|
 
 ## Outputs
 
-The L1B preprocess PGE exports 3 ENVI formatted datacubes along with their associated header files. The outputs of the PGE use the following naming convention:
+The outputs of the L1B preprocess PGE use the following naming convention:
 
-		SISTER_INSTRUMENT_YYYYMMDDTHHMMSS_L1B_SUBPRODUCT_CRID
+    SISTER_<SENSOR>_L1B_RDN_<YYYYMMDDTHHMMSS>_<CRID>_<SUBPRODUCT>
 
-|Product name| Description |  Units | Example filename
-|---|---|---|---|
-| RDN| ENVI Radiance datacube |μW/cm<sup>2</sup>/sr|   SISTER_AVNG\_20220502T180901\_L1B\_RDN\_001 |
-| RDN  .hdr| ENVI Radiance header file  | - |  SISTER_AVNG\_20220502T180901\_L1B\_RDN\_001.hdr|
-| LOC| ENVI Location datacube |-|  SISTER_AVNG\_20220502T180901\_L1B\_LOC\_001 |
-| | 1. WGS-84 longitude |decimal degrees|
-| | 2. WGS-84 latitude |decimal degrees|
-| | 3. Ground elevation |meters|
-| LOC .hdr| ENVI Location header file  | - |  SISTER_AVNG\_20220502T180901\_L1B\_RDN\_001.hdr |
-| OBS| ENVI Observation datacube |-|  SISTER_AVNG\_20220502T180901\_L1B\_OBS\_001 |
-| | 1. path length |meters|
-| | 2. to-sensor-azimuth |0 to 360 degrees clockwise N|
-| | 3. to-sensor-zenith |0 to 90 degrees from zenith|
-| | 4. to-sun-azimuth |0 to 360 degrees clockwise N|
-| | 5. to-sun-zenith |0 to 90 degrees from zenith|
-| | 6. solar phase |degrees|
-| | 7. slope |decimal degrees|
-| | 8. aspect |0 to 360 degrees clockwise from N|
-| | 9. cosine i |unitless|
-| | 10. UTC time |decimal hours|
-| | 11. Earth-sun distance |astronomical unit|
-|OBS .hdr| ENVI Observation header file  | - |  SISTER_AVNG\_20220502T180901\_L1B\_OBS\_001.hdr |
+|Product description |  Units | Example filename
+|---|---|---|
+| ENVI Radiance datacube |μW/cm<sup>2</sup>/sr|   SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001 |
+| ENVI Radiance header file  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.hdr|
+| ENVI Radiance metadata  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.hdr|
+| False color radiance quicklook  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.png |
+| ENVI Location datacube |-|  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_LOC.bin |
+| 1. WGS-84 longitude |decimal degrees|
+| 2. WGS-84 latitude |decimal degrees|
+| 3. Ground elevation |meters|
+| ENVI Location header file  | - | SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_LOC.hdr |
+| ENVI Location metadata  | - | SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_LOC.met.json |
+| ENVI Observation datacube |-|  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_OBS.bin |
+| 1. path length |meters|
+| 2. to-sensor-azimuth |0 to 360 degrees clockwise N|
+| 3. to-sensor-zenith |0 to 90 degrees from zenith|
+| 4. to-sun-azimuth |0 to 360 degrees clockwise N|
+| 5. to-sun-zenith |0 to 90 degrees from zenith|
+| 6. solar phase |degrees|
+| 7. slope |decimal degrees|
+| 8. aspect |0 to 360 degrees clockwise from N|
+| 9. cosine i |unitless|
+| 10. UTC time |decimal hours|
+| 11. Earth-sun distance |astronomical unit|
+| ENVI Observation header file  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_OBS.hdr |
+| Observation metadata |-|  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_OBS.met.json |
+| PGE runconfig| - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.runconfig.json |
+| PGE log| - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.log |
+
 
 File and band descriptions taken directly from [AVIRIS NG Data Product Readme]
 (https://avirisng.jpl.nasa.gov/dataportal/ANG_L1B_L2_Data_Product_Readme_v02.txt)
 
-All outputs of the L1 PGE processor are compressed into a single tar.gz file using the following naming structure:
-
-	 	SISTER_INSTRUMENT_YYYYMMDDTHHMMSS_L1B_RDN_CRID.tar.gz
-
-for example:
-
-	 	SISTER_AVNG_20220502T180901_L1B_RDN_001.tar.gz
 
 ## Algorithm registration
 
-	from maap.maap import MAAP
-	maap = MAAP(maap_host="sister-api.imgspec.org")
-	
-	preprocess_alg = {
-	    "script_command": "sister-preprocess/.imgspec/imgspec_run.sh",
-	    "repo_url": "https://github.com/EnSpec/sister-preprocess.git",
-	    "algorithm_name":"sister-preprocess",
-	    "code_version":"1.0.0",
-	    "algorithm_description":"Preprocess L1 image data for input into downstream algorithms",
-	    "environment_name":"ubuntu",
-	    "disk_space":"50GB",
-	    "queue": "sister-job_worker-32gb",
-	    "build_command": "sister-preprocess/.imgspec/install.sh",
-	    "docker_container_url": docker_container_url,
-	    "algorithm_params":[
-	        {
-	            "field": "l1_granule",
-	            "type": "file"
-	        },
-	          {
-	            "field": "landsat",
-	            "type": "positional",
-	            "default": "None"
-	        }
-	    ]
-	}
-	
-	response = maap.registerAlgorithm(arg=preprocess_alg)
+This algorithm can be registered using the algorirthm_config.yml file found in this repository:
 
+	from maap.maap import MAAP
+	import IPython
+	
+	maap = MAAP(maap_host="sister-api.imgspec.org")
+
+	preprocess_alg_yaml = './sister-preprocess/algorithm_config.yaml'
+	maap.register_algorithm_from_yaml_file(file_path=preprocess_alg_yaml)
 
 ## Examples
 
 ### PRISMA
 	l1p_job_response = maap.submitJob(algo_id="sister-l1_preprocess",
-										    version="1.0.0",
-										    l1_granule= 'PRS_L1_STD_OFFL_20200917091806_20200917091810_0001.zip',
-										    landsat='PRS_20200917091806_20200917091810_0001_landsat.tar.gz',
-										    publish_to_cmr=False,
-										    cmr_metadata={},
-										    queue="sister-job_worker-32gb",
-										    identifier="l1_preprocess_PRISMA_20200917T091806")
+							    version="2.0.0",
+							    raw_dataset= 'PRS_L1_STD_OFFL_20200917091806_20200917091810_0001.zip',
+							    landsat_dataset='PRS_20200917091806_20200917091810_0001_landsat.tar.gz',
+							    crid='001',
+							    publish_to_cmr=False,
+							    cmr_metadata={},
+							    queue="sister-job_worker-16gb",
+							    identifier="SISTER_PRISMA_L1B_RDN_20170827T175432_001")
 
 ### AVCL, AVNG, DESIS
 
 Landsat argument not required, will default to 'None'.
 
  	l1p_job_response = maap.submitJob(algo_id="sister-l1_preprocess",
-										    version="1.0.0",
-										    l1_granule= 'ang20170827t175432.tar',
-										    publish_to_cmr=False,
-										    cmr_metadata={},
-										    queue="sister-job_worker-32gb",
-										    identifier="l1_preprocess_AVNG_20170827T175432")
+								    version="2.0.0",
+								    raw_dataset= 'ang20170827t175432.tar',
+								    crid='001',
+								    publish_to_cmr=False,
+								    cmr_metadata={},
+								    queue="sister-job_worker-16gb",
+								    identifier="SISTER_AVNG_L1B_RDN_20170827T175432_001")
