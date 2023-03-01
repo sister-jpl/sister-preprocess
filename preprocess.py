@@ -41,7 +41,8 @@ def main():
         smile = f'{pge_path}/data/prisma/PRISMA_Mali1_wavelength_shift_surface_smooth.npz'
         rad_coeff = f'{pge_path}/data/prisma/PRS_Mali1_radcoeff_surface.npz'
 
-        landsat_url = run_config['inputs']['landsat_dataset']
+        landsat_directory = os.path.dirname(run_config['inputs']['raw_dataset']).replace('raw','landsat_reference')
+        landsat_url=f'{landsat_directory}/PRS_{base_name[16:50]}_landsat.tar.gz'
         landsat_tar = 'input/%s' % os.path.basename(landsat_url)
 
         download_file(landsat_tar,
@@ -87,6 +88,23 @@ def main():
         datetime =(header['start acquisition time'].replace('-','').replace(':','')[:-1]).upper()
         sensor = 'DESIS'
 
+    elif base_name.startswith('EMIT'):
+
+        emit_directory = os.path.dirname(run_config['inputs']['raw_dataset'])
+        obs_base_name = base_name.replace('RAD','OBS')
+        obs_url = f'{emit_directory}/{obs_base_name}'
+        obs_nc = f'input/{obs_base_name}'
+
+        download_file(obs_nc,
+                      obs_url)
+
+        emit.nc_to_envi(f'input/{base_name}',
+                            'output/',
+                            'temp/',
+                            obs_file = obs_nc,
+                            export_loc = True,
+                            crid = str(run_config['inputs']['crid']))
+        sensor = 'EMIT'
     else:
         print("Unrecognized input sensor")
 
@@ -101,7 +119,6 @@ def main():
                 product = ''
             else:
                 continue
-
             ext = os.path.splitext(file)[-1]
             if ext == '':
                 ext = '.bin'
@@ -111,7 +128,6 @@ def main():
 
             os.rename('%s/%s' % (l1p_dir,old_file),
                       'output/%s' % (new_file))
-
         shutil.rmtree(l1p_dir)
 
     for dataset in glob.glob("output/SISTER*.bin"):
@@ -120,7 +136,6 @@ def main():
 
     #Update crid
     for file in glob.glob("output/SISTER*"):
-
         os.rename(file,file.replace('CRID',
                                         str(run_config['inputs']['crid'])))
 
