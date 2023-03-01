@@ -17,7 +17,7 @@ import hytools as ht
 from hytools.io import parse_envi_header
 import numpy as np
 from PIL import Image
-from sister.sensors import prisma,aviris,desis
+from sister.sensors import prisma,aviris,desis,emit
 from sister.utils import download_file
 
 def main():
