@@ -68,6 +68,20 @@ Prior to data export a series of correction routines are applied to the dataset 
 
 ![PRISMA preprocess workflow](./figures/prisma_workflow.svg)
 
+### EMIT
+
+---
+
+
+File example:
+
+	EMIT_L1B_RAD_001_20220810T174213_2222212_001/EMIT_L1B_RAD_001_20220810T174213_2222212_001.nc
+
+
+
+![EMIT preprocess workflow](./figures/emit_workflow.svg)
+
+
 ## PGE Arguments
 
 In addition to required MAAP job submission arguments the L1 preprocess PGE also takes the following arguments:
