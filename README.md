@@ -8,6 +8,7 @@ The L1B preprocess PGE takes as input imaging spectroscopy datasets in their nat
 - AVIRIS Next Generation
 - DESIS
 - PRISMA
+- EMIT
 
 Processing steps vary by sensor and are descibed below.
 
@@ -68,6 +69,22 @@ Prior to data export a series of correction routines are applied to the dataset 
 
 ![PRISMA preprocess workflow](./figures/prisma_workflow.svg)
 
+### EMIT
+
+---
+
+EMIT L1B radiance and observation datasets are provided by the National Aeronautics and Space Administration (NASA) in NetCDF format and contain radiance, per-pixel coordinates, elevation and sensor and solar geometry data.
+
+File examples:
+
+	EMIT_L1B_RAD_001_20220826T065459_2223805_009.nc
+	EMIT_L1B_OBS_001_20220826T065459_2223805_009.nc
+ 
+EMIT datasets are first converted to ENVI formatted files and then projected to Universal Transverse Mercator (UTM) using the provided per-pixel geographic coordinates at 60m resolution.
+
+![EMIT preprocess workflow](./figures/emit_workflow.svg)
+
+
 ## PGE Arguments
 
 In addition to required MAAP job submission arguments the L1 preprocess PGE also takes the following arguments:
@@ -76,7 +93,6 @@ In addition to required MAAP job submission arguments the L1 preprocess PGE also
 |Argument| Type |  Description | Default|
 |---|---|---|---|
 | raw_dataset| file |URL to input raw dataset granule| -|
-| landsat_dataset | config |URL to composite Landsat reference image, required only for PRISMA datasets| 'none'|
 | crid| config | Composite release identifier| '000'|
 
 ## Outputs
@@ -133,26 +149,11 @@ This algorithm can be registered using the algorirthm_config.yml file found in t
 
 ## Examples
 
-### PRISMA
 	l1p_job_response = maap.submitJob(algo_id="sister-l1_preprocess",
-							    version="2.0.0",
+							    version="2.1.0",
 							    raw_dataset= 'PRS_L1_STD_OFFL_20200917091806_20200917091810_0001.zip',
-							    landsat_dataset='PRS_20200917091806_20200917091810_0001_landsat.tar.gz',
 							    crid='001',
 							    publish_to_cmr=False,
 							    cmr_metadata={},
 							    queue="sister-job_worker-16gb",
 							    identifier="SISTER_PRISMA_L1B_RDN_20170827T175432_001")
-
-### AVCL, AVNG, DESIS
-
-Landsat argument not required, will default to 'None'.
-
- 	l1p_job_response = maap.submitJob(algo_id="sister-l1_preprocess",
-								    version="2.0.0",
-								    raw_dataset= 'ang20170827t175432.tar',
-								    crid='001',
-								    publish_to_cmr=False,
-								    cmr_metadata={},
-								    queue="sister-job_worker-16gb",
-								    identifier="SISTER_AVNG_L1B_RDN_20170827T175432_001")
