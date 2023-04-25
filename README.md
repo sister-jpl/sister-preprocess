@@ -72,12 +72,14 @@ Prior to data export a series of correction routines are applied to the dataset 
 
 ---
 
+EMIT L1B radiance and observation datasets are provided by the National Aeronautics and Space Administration (NASA) in NetCDF format and contained radiance, pixel geolocation data, elevation and sensor and solar geometry data.
 
-File example:
+File examples:
 
-	EMIT_L1B_RAD_001_20220810T174213_2222212_001/EMIT_L1B_RAD_001_20220810T174213_2222212_001.nc
-
-
+	EMIT_L1B_RAD_001_20220826T065459_2223805_009.nc
+	EMIT_L1B_OBS_001_20220826T065459_2223805_009.nc
+ 
+EMIT dataset are first converted to ENVI formatted files and then projected to Universal Transverse Mercator (UTM) using the provided per-pixel geographic coordinates at 60m resolution.
 
 ![EMIT preprocess workflow](./figures/emit_workflow.svg)
 
