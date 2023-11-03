@@ -6,33 +6,33 @@ Space-based Imaging Spectroscopy and Thermal PathfindER
 Author: Adam Chlus
 """
 
-import sys
+import argparse
 import json
 
+
 def main():
-    '''
+    """
         This function takes as input the path to an inputs.json file and exports a run config json
         containing the arguments needed to run the L1 preprocess PGE.
 
-    '''
+    """
 
-    inputs_json  = sys.argv[1]
+    parser = argparse.ArgumentParser(description='Parse inputs to create runconfig.json')
+    parser.add_argument('--raw_dataset', help='Path to raw dataset')
+    parser.add_argument('--crid', help='CRID value')
+    args = parser.parse_args()
 
-    with open(inputs_json, 'r') as in_file:
-        inputs =json.load(in_file)
-
-    run_config = {"inputs":{}}
-
-    for file_dict in inputs["file"]:
-        for key,value in file_dict.items():
-            run_config["inputs"][key] = value
-
-    run_config["inputs"].update(inputs["config"])
+    run_config = {
+        "inputs": {
+            "raw_dataset": args.raw_dataset,
+            "crid": args.crid
+        }
+    }
 
     config_file = 'runconfig.json'
 
     with open(config_file, 'w') as outfile:
-        json.dump(run_config,outfile,indent=3)
+        json.dump(run_config, outfile, indent=4)
 
 
 if __name__=='__main__':

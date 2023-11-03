@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-'''
+"""
 SISTER
 Space-based Imaging Spectroscopy and Thermal PathfindER
 Author: Adam Chlus
 
-'''
+"""
 
 import glob
 import os
@@ -20,6 +20,7 @@ from PIL import Image
 from sister.sensors import prisma,aviris,desis,emit
 from sister.utils import download_file
 
+
 def main():
 
     pge_path = os.path.dirname(os.path.realpath(__file__))
@@ -27,7 +28,7 @@ def main():
     run_config_json = sys.argv[1]
 
     with open(run_config_json, 'r') as in_file:
-        run_config =json.load(in_file)
+        run_config = json.load(in_file)
 
     base_name = os.path.basename(run_config['inputs']['raw_dataset'])
 
@@ -41,7 +42,7 @@ def main():
         smile = f'{pge_path}/data/prisma/PRISMA_Mali1_wavelength_shift_surface_smooth.npz'
         rad_coeff = f'{pge_path}/data/prisma/PRS_Mali1_radcoeff_surface.npz'
 
-        landsat_directory = os.path.dirname(run_config['inputs']['raw_dataset']).replace('raw','landsat_reference')
+        landsat_directory = os.path.dirname(run_config['inputs']['raw_dataset']).replace('raw', 'landsat_reference')
         landsat_url=f'{landsat_directory}/PRS_{base_name[16:50]}_landsat.tar.gz'
         landsat_tar = 'input/%s' % os.path.basename(landsat_url)
 
@@ -177,6 +178,7 @@ def generate_quicklook(input_file,output_dir):
     im = Image.fromarray(rgb)
     im.save(image_file)
 
+
 def generate_metadata(header_file,output_dir):
 
     header = parse_envi_header(header_file)
@@ -199,6 +201,7 @@ def generate_metadata(header_file,output_dir):
 
     with open(config_file, 'w') as outfile:
         json.dump(metadata,outfile,indent=3)
+
 
 if __name__=='__main__':
 
