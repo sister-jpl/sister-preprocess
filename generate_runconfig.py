@@ -28,6 +28,7 @@ def main():
             "crid": args.crid
         }
     }
+    run_config["inputs"]["experimental"] = True if args.experimental == "True" else False
 
     config_file = 'runconfig.json'
 

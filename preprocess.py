@@ -14,7 +14,7 @@ import sys
 import tarfile
 import json
 import hytools as ht
-from hytools.io import parse_envi_header
+from hytools.io import parse_envi_header, write_envi_header
 import numpy as np
 from PIL import Image
 from sister.sensors import prisma,aviris,desis,emit
@@ -31,6 +31,8 @@ def main():
         run_config = json.load(in_file)
 
     base_name = os.path.basename(run_config['inputs']['raw_dataset'])
+
+    experimental = run_config['inputs']['experimental']
 
     os.mkdir('output')
     os.mkdir('temp')
@@ -133,7 +135,7 @@ def main():
 
     for dataset in glob.glob("output/SISTER*.bin"):
         generate_metadata(dataset.replace('.bin','.hdr'),
-                                  'output/')
+                                  'output/', experimental)
 
     #Update crid
     for file in glob.glob("output/SISTER*"):
@@ -148,6 +150,12 @@ def main():
 
     shutil.copyfile('run.log',
                     'output/%s.log' % os.path.basename(rdn_file)[:-4])
+
+
+    # If experimental, prefix filenames with "EXPERIMENTAL_"
+    if experimental:
+        for file in glob.glob(f"output/SISTER*"):
+            shutil.copyfile(file, f"output/EXPERIMENTAL_{os.path.basename(file)}")
 
 
 def generate_quicklook(input_file,output_dir):
@@ -179,9 +187,14 @@ def generate_quicklook(input_file,output_dir):
     im.save(image_file)
 
 
-def generate_metadata(header_file,output_dir):
+def generate_metadata(header_file,output_dir,experimental):
 
     header = parse_envi_header(header_file)
+    # First update the description with disclaimer if experimental
+    if experimental:
+        header['description'] = header['description'] + \
+                                " (DISCLAIMER: THIS IS EXPERIMENTAL DATA AND NOT INTENDED FOR SCIENTIFIC USE)"
+        write_envi_header(header_file, header)
     base_name =os.path.basename(header_file)[:-4]
 
     metadata = {}
