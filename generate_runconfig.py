@@ -20,6 +20,7 @@ def main():
     parser = argparse.ArgumentParser(description='Parse inputs to create runconfig.json')
     parser.add_argument('--raw_dataset', help='Path to raw dataset')
     parser.add_argument('--crid', help='CRID value')
+    parser.add_argument('--experimental', help='If true then designates data as experiemntal')
     args = parser.parse_args()
 
     run_config = {
@@ -28,7 +29,7 @@ def main():
             "crid": args.crid
         }
     }
-    run_config["inputs"]["experimental"] = True if args.experimental == "True" else False
+    run_config["inputs"]["experimental"] = True if args.experimental.lower() == "true" else False
 
     config_file = 'runconfig.json'
 

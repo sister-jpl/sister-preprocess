@@ -152,10 +152,10 @@ def main():
                     'output/%s.log' % os.path.basename(rdn_file)[:-4])
 
 
-    # If experimental, prefix filenames with "EXPERIMENTAL_"
+    # If experimental, prefix filenames with "EXPERIMENTAL-"
     if experimental:
         for file in glob.glob(f"output/SISTER*"):
-            shutil.copyfile(file, f"output/EXPERIMENTAL_{os.path.basename(file)}")
+            shutil.move(file, f"output/EXPERIMENTAL-{os.path.basename(file)}")
 
 
 def generate_quicklook(input_file,output_dir):
@@ -192,8 +192,8 @@ def generate_metadata(header_file,output_dir,experimental):
     header = parse_envi_header(header_file)
     # First update the description with disclaimer if experimental
     if experimental:
-        header['description'] = header['description'] + \
-                                " (DISCLAIMER: THIS IS EXPERIMENTAL DATA AND NOT INTENDED FOR SCIENTIFIC USE)"
+        header['description'] = header['description'].capitalize() + \
+                                " (DISCLAIMER: THIS DATA IS EXPERIMENTAL AND NOT INTENDED FOR SCIENTIFIC USE)"
         write_envi_header(header_file, header)
     base_name =os.path.basename(header_file)[:-4]
 
@@ -201,7 +201,6 @@ def generate_metadata(header_file,output_dir,experimental):
     metadata['sensor'] = header['sensor type'].upper()
     metadata['start_time'] = header['start acquisition time'].upper()
     metadata['end_time'] = header['end acquisition time'].upper()
-    metadata['description'] = header['description'].capitalize()
 
     # Split corner coordinates string into list
     coords = [float(x) for x in header['bounding box'].replace(']','').replace('[','').split(',')]
