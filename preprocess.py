@@ -203,6 +203,7 @@ def generate_metadata(header_file,output_dir,experimental):
     metadata['sensor'] = header['sensor type'].upper()
     metadata['start_time'] = header['start acquisition time'].upper()
     metadata['end_time'] = header['end acquisition time'].upper()
+    metadata['description'] = header['description']
 
     # Split corner coordinates string into list
     coords = [float(x) for x in header['bounding box'].replace(']','').replace('[','').split(',')]
