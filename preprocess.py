@@ -148,9 +148,9 @@ def main():
     shutil.copyfile(run_config_json,
                     'output/%s.runconfig.json' % os.path.basename(rdn_file)[:-4])
 
-    shutil.copyfile('run.log',
-                    'output/%s.log' % os.path.basename(rdn_file)[:-4])
-
+    if os.path.exists("run.log"):
+        shutil.copyfile('run.log',
+                        'output/%s.log' % os.path.basename(rdn_file)[:-4])
 
     # If experimental, prefix filenames with "EXPERIMENTAL-"
     if experimental:
