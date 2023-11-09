@@ -192,9 +192,11 @@ def generate_metadata(header_file,output_dir,experimental):
     header = parse_envi_header(header_file)
     # First update the description with disclaimer if experimental
     if experimental:
-        header['description'] = header['description'].capitalize() + \
-                                " (DISCLAIMER: THIS DATA IS EXPERIMENTAL AND NOT INTENDED FOR SCIENTIFIC USE)"
-        write_envi_header(header_file, header)
+        header['description'] = "(DISCLAIMER: THIS DATA IS EXPERIMENTAL AND NOT INTENDED FOR SCIENTIFIC USE) " + \
+                                header['description'].capitalize()
+    else:
+        header['description'] = header['description'].capitalize()
+    write_envi_header(header_file, header)
     base_name =os.path.basename(header_file)[:-4]
 
     metadata = {}
