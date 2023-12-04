@@ -142,7 +142,7 @@ def main():
                                         str(run_config['inputs']['crid'])))
 
     rdn_file =  glob.glob("output/*%s.bin" % run_config['inputs']['crid'])[0]
-    rdn_basename = os.path.basename(rdn_file).splitext()[0]
+    rdn_basename = os.path.basename(rdn_file)[:-4]
     generate_quicklook(rdn_file,'output/')
 
     output_runconfig_path = 'output/%s.runconfig.json' % os.path.basename(rdn_file)[:-4]
@@ -182,7 +182,7 @@ def main():
         catalog.add_item(item)
 
     # Add item for runconfig
-    metadata["id"] = os.path.basename(output_runconfig_path).splitext()[0]
+    metadata["id"] = os.path.basename(output_runconfig_path)[:-4]
     metadata["properties"]["description"] = f"{disclaimer}The run configuration filed used as input to the PGE."
     assets = {"runconfig": output_runconfig_path}
     item = create_item(metadata, assets)
@@ -246,10 +246,10 @@ def update_experimental_hdr_files(header_file):
 def generate_stac_metadata(header_file):
 
     header = parse_envi_header(header_file)
-    base_name =os.path.basename(header_file)[:-4]
+    base_name = os.path.basename(header_file)[:-4]
 
     metadata = {}
-    metadata['id'] = base_name.splitext()[0]
+    metadata['id'] = base_name
     metadata['start_datetime'] = dt.datetime.strptime(header['start acquisition time'], "%Y-%m-%dt%H:%M:%Sz")
     metadata['end_datetime'] = dt.datetime.strptime(header['end acquisition time'], "%Y-%m-%dt%H:%M:%Sz")
     # Split corner coordinates string into list
