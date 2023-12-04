@@ -197,7 +197,7 @@ def main():
         catalog.add_item(item)
 
     # set catalog hrefs
-    catalog.normalize_hrefs(os.path.join(tmp_dir, "stac"))
+    catalog.normalize_hrefs("./output/stac")
 
     # save the catalog
     catalog.describe()
