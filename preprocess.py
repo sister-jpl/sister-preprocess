@@ -7,6 +7,7 @@ Author: Adam Chlus
 
 """
 
+import datetime as dt
 import glob
 import os
 import shutil
@@ -17,6 +18,8 @@ import hytools as ht
 from hytools.io import parse_envi_header, write_envi_header
 import numpy as np
 from PIL import Image
+import pystac
+
 from sister.sensors import prisma,aviris,desis,emit
 from sister.utils import download_file
 
@@ -133,29 +136,74 @@ def main():
                       'output/%s' % (new_file))
         shutil.rmtree(l1p_dir)
 
-    for dataset in glob.glob("output/SISTER*.bin"):
-        generate_metadata(dataset.replace('.bin','.hdr'),
-                                  'output/', experimental)
-
     #Update crid
     for file in glob.glob("output/SISTER*"):
         os.rename(file,file.replace('CRID',
                                         str(run_config['inputs']['crid'])))
 
     rdn_file =  glob.glob("output/*%s.bin" % run_config['inputs']['crid'])[0]
+    rdn_basename = os.path.basename(rdn_file).splitext()[0]
     generate_quicklook(rdn_file,'output/')
 
-    shutil.copyfile(run_config_json,
-                    'output/%s.runconfig.json' % os.path.basename(rdn_file)[:-4])
+    output_runconfig_path = 'output/%s.runconfig.json' % os.path.basename(rdn_file)[:-4]
+    shutil.copyfile(run_config_json, output_runconfig_path)
 
+    output_log_path = 'output/%s.log' % os.path.basename(rdn_file)[:-4]
     if os.path.exists("run.log"):
-        shutil.copyfile('run.log',
-                        'output/%s.log' % os.path.basename(rdn_file)[:-4])
+        shutil.copyfile('run.log', output_log_path)
 
-    # If experimental, prefix filenames with "EXPERIMENTAL-"
+    # If experimental, prefix filenames with "EXPERIMENTAL-" and update ENVI .hdr descriptions
+    disclaimer = ""
     if experimental:
+        disclaimer = "(DISCLAIMER: THIS DATA IS EXPERIMENTAL AND NOT INTENDED FOR SCIENTIFIC USE) "
         for file in glob.glob(f"output/SISTER*"):
             shutil.move(file, f"output/EXPERIMENTAL-{os.path.basename(file)}")
+        for hdr_file in glob.glob(f"output/*SISTER*hdr"):
+            update_experimental_hdr_files(hdr_file)
+
+    # Generate STAC
+    catalog = pystac.Catalog(id=rdn_basename,
+                             description=f'{disclaimer}This catalog contains the output data products of the SISTER '
+                                         f'preprocessing PGE, including radiance, location data, and observation '
+                                         f'parameters. In addition, it contains execution artifacts including the '
+                                         f'runconfig file and execution log.')
+
+    # Add items for data products
+    for hdr_file in glob.glob("output/*SISTER*.hdr"):
+        metadata = generate_stac_metadata(hdr_file)
+        assets = {
+            "envi_binary": hdr_file.replace(".hdr", ".bin"),
+            "envi_header": hdr_file
+        }
+        png_file = hdr_file.replace(".hdr", ".png")
+        if os.path.exists(png_file):
+            assets["browse"] = png_file
+        item = create_item(metadata, assets)
+        catalog.add_item(item)
+
+    # Add item for runconfig
+    metadata["id"] = os.path.basename(output_runconfig_path).splitext()[0]
+    metadata["properties"]["description"] = f"{disclaimer}The run configuration filed used as input to the PGE."
+    assets = {"runconfig": output_runconfig_path}
+    item = create_item(metadata, assets)
+    catalog.add_item(item)
+
+    # Add item for log (if exists)
+    if os.path.exists(output_log_path):
+        metadata["id"] = os.path.basename(output_log_path)
+        metadata["properties"]["description"] = f"{disclaimer}The execution log file."
+        assets = {"log": output_log_path}
+        item = create_item(metadata, assets)
+        catalog.add_item(item)
+
+    # set catalog hrefs
+    catalog.normalize_hrefs(os.path.join(tmp_dir, "stac"))
+
+    # save the catalog
+    catalog.describe()
+    catalog.save(catalog_type=pystac.CatalogType.SELF_CONTAINED)
+    print("Catalog HREF: ", catalog.get_self_href())
+    print("Item HREF: ", item.get_self_href())
 
 
 def generate_quicklook(input_file,output_dir):
@@ -187,35 +235,47 @@ def generate_quicklook(input_file,output_dir):
     im.save(image_file)
 
 
-def generate_metadata(header_file,output_dir,experimental):
+def update_experimental_hdr_files(header_file):
 
     header = parse_envi_header(header_file)
-    # First update the description with disclaimer if experimental
-    if experimental:
-        header['description'] = "(DISCLAIMER: THIS DATA IS EXPERIMENTAL AND NOT INTENDED FOR SCIENTIFIC USE) " + \
+    header['description'] = "(DISCLAIMER: THIS DATA IS EXPERIMENTAL AND NOT INTENDED FOR SCIENTIFIC USE) " + \
                                 header['description'].capitalize()
-    else:
-        header['description'] = header['description'].capitalize()
     write_envi_header(header_file, header)
+
+
+def generate_stac_metadata(header_file):
+
+    header = parse_envi_header(header_file)
     base_name =os.path.basename(header_file)[:-4]
 
     metadata = {}
-    metadata['sensor'] = header['sensor type'].upper()
-    metadata['start_time'] = header['start acquisition time'].upper()
-    metadata['end_time'] = header['end acquisition time'].upper()
-    metadata['description'] = header['description']
-
+    metadata['id'] = base_name.splitext()[0]
+    metadata['start_datetime'] = dt.datetime.strptime(header['start acquisition time'], "%Y-%m-%dt%H:%M:%Sz")
+    metadata['end_datetime'] = dt.datetime.strptime(header['end acquisition time'], "%Y-%m-%dt%H:%M:%Sz")
     # Split corner coordinates string into list
-    coords = [float(x) for x in header['bounding box'].replace(']','').replace('[','').split(',')]
+    coords = [float(x) for x in header['bounding box'].replace(']', '').replace('[', '').split(',')]
+    metadata['geometry'] = [list(x) for x in zip(coords[::2], coords[1::2])]
+    metadata['properties'] = {
+        'sensor': header['sensor type'].upper(),
+        'description': header['description'],
+        'product': base_name.split('_')[4],
+        'processing_level': base_name.split('_')[2]
+    }
+    return metadata
 
-    metadata['bounding_box'] = [list(x) for x in zip(coords[::2],coords[1::2])]
-    metadata['product'] = base_name.split('_')[4]
-    metadata['processing_level'] = base_name.split('_')[2]
 
-    config_file = f'{output_dir}/{base_name}.met.json'
-
-    with open(config_file, 'w') as outfile:
-        json.dump(metadata,outfile,indent=3)
+def create_item(metadata, assets):
+    item = pystac.Item(
+        id=metadata['id'],
+        start_datetime=metadata['start_datetime'],
+        end_datetime=metadata['end_datetime'],
+        geometry=metadata['geometry'],
+        properties=metadata['properties']
+    )
+    # Add assets
+    for key, href in assets.items():
+        item.add_asset(key=key, asset=pystac.Asset(href=href))
+    return item
 
 
 if __name__=='__main__':
