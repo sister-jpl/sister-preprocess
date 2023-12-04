@@ -267,9 +267,11 @@ def generate_stac_metadata(header_file):
 def create_item(metadata, assets):
     item = pystac.Item(
         id=metadata['id'],
+        datetime=metadata['start_datetime'],
         start_datetime=metadata['start_datetime'],
         end_datetime=metadata['end_datetime'],
         geometry=metadata['geometry'],
+        bbox=None,
         properties=metadata['properties']
     )
     # Add assets
