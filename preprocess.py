@@ -176,19 +176,19 @@ def main():
     for hdr_file in hdr_files:
         metadata = generate_stac_metadata(hdr_file)
         assets = {
-            "envi_binary": hdr_file.replace(".hdr", ".bin"),
-            "envi_header": hdr_file
+            "envi_binary": f"./{os.path.basename(hdr_file.replace('.hdr', '.bin'))}",
+            "envi_header": f"./{os.path.basename(hdr_file)}"
         }
         png_file = hdr_file.replace(".hdr", ".png")
         if os.path.exists(png_file):
-            assets["browse"] = png_file
+            assets["browse"] = f"./{os.path.basename(png_file)}"
         item = create_item(metadata, assets)
         catalog.add_item(item)
 
     # Add item for runconfig
     metadata["id"] = f"{rdn_basename}_RUNCONFIG"
     metadata["properties"]["description"] = f"{disclaimer}The run configuration file used as input to the PGE."
-    assets = {"runconfig": output_runconfig_path}
+    assets = {"runconfig": f"./{os.path.basename(output_runconfig_path)}"}
     item = create_item(metadata, assets)
     catalog.add_item(item)
 
@@ -196,18 +196,24 @@ def main():
     if os.path.exists(output_log_path):
         metadata["id"] = f"{rdn_basename}_LOG"
         metadata["properties"]["description"] = f"{disclaimer}The execution log file."
-        assets = {"log": output_log_path}
+        assets = {"log": f"./{os.path.basename(output_log_path)}"}
         item = create_item(metadata, assets)
         catalog.add_item(item)
 
     # set catalog hrefs
-    catalog.normalize_hrefs("./output/stac")
+    catalog.normalize_hrefs(f"./output/{rdn_basename}")
 
     # save the catalog
     catalog.describe()
     catalog.save(catalog_type=pystac.CatalogType.SELF_CONTAINED)
     print("Catalog HREF: ", catalog.get_self_href())
     # print("Item HREF: ", item.get_self_href())
+
+    # Move the assets from the output directory to the stac item directories
+    for item in catalog.get_items():
+        for asset in item.assets.values():
+            fname = os.path.basename(asset.href)
+            shutil.move(f"output/{fname}", f"output/{rdn_basename}/{item.id}/{fname}")
 
 
 def generate_quicklook(input_file,output_dir):
