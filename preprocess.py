@@ -20,6 +20,8 @@ import numpy as np
 from PIL import Image
 import pystac
 
+import spectral.io.envi as envi
+
 from sister.sensors import prisma,aviris,desis,emit
 from sister.utils import download_file
 
@@ -182,7 +184,7 @@ def main():
         catalog.add_item(item)
 
     # Add item for runconfig
-    metadata["id"] = os.path.basename(output_runconfig_path)
+    metadata["id"] = f"{rdn_basename}_RUNCONFIG"
     metadata["properties"]["description"] = f"{disclaimer}The run configuration file used as input to the PGE."
     assets = {"runconfig": output_runconfig_path}
     item = create_item(metadata, assets)
@@ -190,14 +192,14 @@ def main():
 
     # Add item for log (if exists)
     if os.path.exists(output_log_path):
-        metadata["id"] = os.path.basename(output_log_path)
+        metadata["id"] = f"{rdn_basename}_LOG"
         metadata["properties"]["description"] = f"{disclaimer}The execution log file."
         assets = {"log": output_log_path}
         item = create_item(metadata, assets)
         catalog.add_item(item)
 
     # set catalog hrefs
-    # catalog.normalize_hrefs("./output/stac")
+    catalog.normalize_hrefs("./output/stac")
 
     # save the catalog
     catalog.describe()
@@ -245,7 +247,7 @@ def update_experimental_hdr_files(header_file):
 
 def generate_stac_metadata(header_file):
 
-    header = parse_envi_header(header_file)
+    header = envi.read_envi_header(header_file)
     base_name = os.path.basename(header_file)[:-4]
 
     metadata = {}
