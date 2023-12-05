@@ -180,7 +180,7 @@ def main():
             "envi_header": f"./{os.path.basename(hdr_file)}"
         }
         # If it's the radiance product, then add png, runconfig, and log
-        if os.path.basename(hdr_file) == f"{rdn_basename}.hdr"
+        if os.path.basename(hdr_file) == f"{rdn_basename}.hdr":
             png_file = hdr_file.replace(".hdr", ".png")
             assets["browse"] = f"./{os.path.basename(png_file)}"
             assets["runconfig"] = f"./{os.path.basename(output_runconfig_path)}"
