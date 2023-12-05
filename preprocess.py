@@ -264,9 +264,10 @@ def generate_stac_metadata(header_file):
     metadata['end_datetime'] = dt.datetime.strptime(header['end acquisition time'], "%Y-%m-%dt%H:%M:%Sz")
     # Split corner coordinates string into list
     coords = [float(x) for x in header['bounding box'].replace(']', '').replace('[', '').split(',')]
+    geometry = [list(x) for x in zip(coords[::2], coords[1::2])]
     # Add first coord to the end of the list to close the polygon
-    coords.append(coords[0])
-    metadata['geometry'] = [list(x) for x in zip(coords[::2], coords[1::2])]
+    geometry.append(geometry[0])
+    metadata['geometry'] = geometry
     metadata['properties'] = {
         'sensor': header['sensor type'].upper(),
         'description': header['description'],
