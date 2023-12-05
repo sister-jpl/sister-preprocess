@@ -171,7 +171,9 @@ def main():
                                          f'runconfig file and execution log.')
 
     # Add items for data products
-    for hdr_file in glob.glob("output/*SISTER*.hdr").sort():
+    hdr_files = glob.glob("output/*SISTER*.hdr")
+    hdr_files.sort()
+    for hdr_file in hdr_files:
         metadata = generate_stac_metadata(hdr_file)
         assets = {
             "envi_binary": hdr_file.replace(".hdr", ".bin"),
