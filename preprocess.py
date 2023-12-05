@@ -141,17 +141,6 @@ def main():
         os.rename(file,file.replace('CRID',
                                         str(run_config['inputs']['crid'])))
 
-    rdn_file =  glob.glob("output/*%s.bin" % run_config['inputs']['crid'])[0]
-    rdn_basename = os.path.basename(rdn_file)[:-4]
-    generate_quicklook(rdn_file,'output/')
-
-    output_runconfig_path = 'output/%s.runconfig.json' % os.path.basename(rdn_file)[:-4]
-    shutil.copyfile(run_config_json, output_runconfig_path)
-
-    output_log_path = 'output/%s.log' % os.path.basename(rdn_file)[:-4]
-    if os.path.exists("run.log"):
-        shutil.copyfile('run.log', output_log_path)
-
     # If experimental, prefix filenames with "EXPERIMENTAL-" and update ENVI .hdr descriptions
     disclaimer = ""
     if experimental:
@@ -160,6 +149,17 @@ def main():
             shutil.move(file, f"output/EXPERIMENTAL-{os.path.basename(file)}")
         for hdr_file in glob.glob(f"output/*SISTER*hdr"):
             update_experimental_hdr_files(hdr_file)
+
+    rdn_file = glob.glob("output/*%s.bin" % run_config['inputs']['crid'])[0]
+    generate_quicklook(rdn_file, 'output/')
+    rdn_basename = os.path.basename(rdn_file)[:-4]
+
+    output_runconfig_path = f'output/{rdn_basename}.runconfig.json'
+    shutil.copyfile(run_config_json, output_runconfig_path)
+
+    output_log_path = f'output/{rdn_basename}.log'
+    if os.path.exists("run.log"):
+        shutil.copyfile('run.log', output_log_path)
 
     # Generate STAC
     catalog = pystac.Catalog(id=rdn_basename,
@@ -182,8 +182,8 @@ def main():
         catalog.add_item(item)
 
     # Add item for runconfig
-    metadata["id"] = os.path.basename(output_runconfig_path)[:-4]
-    metadata["properties"]["description"] = f"{disclaimer}The run configuration filed used as input to the PGE."
+    metadata["id"] = os.path.basename(output_runconfig_path)
+    metadata["properties"]["description"] = f"{disclaimer}The run configuration file used as input to the PGE."
     assets = {"runconfig": output_runconfig_path}
     item = create_item(metadata, assets)
     catalog.add_item(item)
@@ -197,13 +197,13 @@ def main():
         catalog.add_item(item)
 
     # set catalog hrefs
-    catalog.normalize_hrefs("./output/stac")
+    # catalog.normalize_hrefs("./output/stac")
 
     # save the catalog
     catalog.describe()
     catalog.save(catalog_type=pystac.CatalogType.SELF_CONTAINED)
     print("Catalog HREF: ", catalog.get_self_href())
-    print("Item HREF: ", item.get_self_href())
+    # print("Item HREF: ", item.get_self_href())
 
 
 def generate_quicklook(input_file,output_dir):
