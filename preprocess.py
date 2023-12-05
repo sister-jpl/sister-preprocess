@@ -167,8 +167,8 @@ def main():
     catalog = pystac.Catalog(id=rdn_basename,
                              description=f'{disclaimer}This catalog contains the output data products of the SISTER '
                                          f'preprocessing PGE, including radiance, location data, and observation '
-                                         f'parameters. In addition, it contains execution artifacts including the '
-                                         f'runconfig file and execution log.')
+                                         f'parameters. Execution artifacts including the runconfig file and execution '
+                                         f'log file are included with the radiance data.')
 
     # Add items for data products
     hdr_files = glob.glob("output/*SISTER*.hdr")
