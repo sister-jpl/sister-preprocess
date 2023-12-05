@@ -179,24 +179,13 @@ def main():
             "envi_binary": f"./{os.path.basename(hdr_file.replace('.hdr', '.bin'))}",
             "envi_header": f"./{os.path.basename(hdr_file)}"
         }
-        png_file = hdr_file.replace(".hdr", ".png")
-        if os.path.exists(png_file):
+        # If it's the radiance product, then add png, runconfig, and log
+        if os.path.basename(hdr_file) == f"{rdn_basename}.hdr"
+            png_file = hdr_file.replace(".hdr", ".png")
             assets["browse"] = f"./{os.path.basename(png_file)}"
-        item = create_item(metadata, assets)
-        catalog.add_item(item)
-
-    # Add item for runconfig
-    metadata["id"] = f"{rdn_basename}_RUNCONFIG"
-    metadata["properties"]["description"] = f"{disclaimer}The run configuration file used as input to the PGE."
-    assets = {"runconfig": f"./{os.path.basename(output_runconfig_path)}"}
-    item = create_item(metadata, assets)
-    catalog.add_item(item)
-
-    # Add item for log (if exists)
-    if os.path.exists(output_log_path):
-        metadata["id"] = f"{rdn_basename}_LOG"
-        metadata["properties"]["description"] = f"{disclaimer}The execution log file."
-        assets = {"log": f"./{os.path.basename(output_log_path)}"}
+            assets["runconfig"] = f"./{os.path.basename(output_runconfig_path)}"
+            if os.path.exists(output_log_path):
+                assets["log"] = f"./{os.path.basename(output_log_path)}"
         item = create_item(metadata, assets)
         catalog.add_item(item)
 
