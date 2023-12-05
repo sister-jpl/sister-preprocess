@@ -171,7 +171,7 @@ def main():
                                          f'runconfig file and execution log.')
 
     # Add items for data products
-    for hdr_file in glob.glob("output/*SISTER*.hdr"):
+    for hdr_file in glob.glob("output/*SISTER*.hdr").sort():
         metadata = generate_stac_metadata(hdr_file)
         assets = {
             "envi_binary": hdr_file.replace(".hdr", ".bin"),
@@ -256,6 +256,8 @@ def generate_stac_metadata(header_file):
     metadata['end_datetime'] = dt.datetime.strptime(header['end acquisition time'], "%Y-%m-%dt%H:%M:%Sz")
     # Split corner coordinates string into list
     coords = [float(x) for x in header['bounding box'].replace(']', '').replace('[', '').split(',')]
+    # Add first coord to the end of the list to close the polygon
+    coords.append(coords[0])
     metadata['geometry'] = [list(x) for x in zip(coords[::2], coords[1::2])]
     metadata['properties'] = {
         'sensor': header['sensor type'].upper(),
