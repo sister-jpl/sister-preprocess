@@ -257,10 +257,15 @@ def generate_stac_metadata(header_file):
     # Add first coord to the end of the list to close the polygon
     geometry.append(geometry[0])
     metadata['geometry'] = geometry
+    product = base_name.split('_')[3]
+    if "LOC" in base_name:
+        product += "_LOC"
+    if "OBS" in base_name:
+        product += "_OBS"
     metadata['properties'] = {
         'sensor': header['sensor type'].upper(),
         'description': header['description'],
-        'product': base_name.split('_')[4],
+        'product': product,
         'processing_level': base_name.split('_')[2]
     }
     return metadata
