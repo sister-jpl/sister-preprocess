@@ -287,6 +287,7 @@ def create_item(metadata, assets):
         start_datetime=metadata['start_datetime'],
         end_datetime=metadata['end_datetime'],
         geometry=metadata['geometry'],
+        collection=metadata['collection'],
         bbox=None,
         properties=metadata['properties']
     )
