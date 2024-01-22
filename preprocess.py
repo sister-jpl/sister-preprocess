@@ -51,6 +51,7 @@ def main():
 
         landsat_directory = os.path.dirname(run_config['inputs']['raw_dataset']).replace('raw', 'landsat_reference')
         landsat_url=f'{landsat_directory}/PRS_{base_name[16:50]}_landsat.tar.gz'
+        os.mkdir('input')
         landsat_tar = 'input/%s' % os.path.basename(landsat_url)
 
         download_file(landsat_tar,
@@ -61,7 +62,7 @@ def main():
 
         landsat = landsat_tar[:-7]
 
-        prisma.he5_to_envi(f'input/{base_name}',
+        prisma.he5_to_envi(run_config['inputs']['raw_dataset'],
                             'output/',
                             'temp/',
                             aws_cop_url,
@@ -75,7 +76,7 @@ def main():
         sensor = 'PRISMA'
 
     elif base_name.startswith('ang') or base_name.startswith('f'):
-        aviris.preprocess(f'input/{base_name}',
+        aviris.preprocess(run_config['inputs']['raw_dataset'],
                             'output/',
                             'temp/',
                             res = 30)
@@ -83,7 +84,7 @@ def main():
         sensor = os.path.basename(l1p_dir).split('_')[1]
 
     elif base_name.startswith('DESIS'):
-        desis.l1c_process(f'input/{base_name}',
+        desis.l1c_process(run_config['inputs']['raw_dataset'],
                             'output/',
                             'temp/',
                             aws_cop_url)
@@ -101,12 +102,13 @@ def main():
         emit_directory = os.path.dirname(run_config['inputs']['raw_dataset'])
         obs_base_name = base_name.replace('RAD','OBS')
         obs_url = f'{emit_directory}/{obs_base_name}'
+        os.mkdir('input')
         obs_nc = f'input/{obs_base_name}'
 
         download_file(obs_nc,
                       obs_url)
 
-        emit.nc_to_envi(f'input/{base_name}',
+        emit.nc_to_envi(run_config['inputs']['raw_dataset'],
                             'output/',
                             'temp/',
                             obs_file = obs_nc,
@@ -198,11 +200,13 @@ def main():
     print("Catalog HREF: ", catalog.get_self_href())
     # print("Item HREF: ", item.get_self_href())
 
-    # Move the assets from the output directory to the stac item directories
+    # Move the assets from the output directory to the stac item directories and create empty .met.json files
     for item in catalog.get_items():
         for asset in item.assets.values():
             fname = os.path.basename(asset.href)
             shutil.move(f"output/{fname}", f"output/{rdn_basename}/{item.id}/{fname}")
+        with open(f"output/{rdn_basename}/{item.id}/{item.id}.met.json", mode="w"):
+            pass
 
 
 def generate_quicklook(input_file,output_dir):
@@ -256,17 +260,22 @@ def generate_stac_metadata(header_file):
     geometry = [list(x) for x in zip(coords[::2], coords[1::2])]
     # Add first coord to the end of the list to close the polygon
     geometry.append(geometry[0])
-    metadata['geometry'] = geometry
-    product = base_name.split('_')[3]
+    metadata['geometry'] = {
+        "type": "Polygon",
+        "coordinates": geometry
+    }
+    base_tokens = base_name.split('_')
+    metadata['collection'] = f"SISTER_{base_tokens[1]}_{base_tokens[2]}_{base_tokens[3]}_{base_tokens[5]}"
+    product = base_tokens[3]
     if "LOC" in base_name:
         product += "_LOC"
     if "OBS" in base_name:
         product += "_OBS"
     metadata['properties'] = {
-        'sensor': header['sensor type'].upper(),
+        'sensor': base_tokens[1],
         'description': header['description'],
         'product': product,
-        'processing_level': base_name.split('_')[2]
+        'processing_level': base_tokens[2]
     }
     return metadata
 
