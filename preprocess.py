@@ -162,8 +162,8 @@ def main():
     shutil.copyfile(run_config_json, output_runconfig_path)
 
     output_log_path = f'output/{rdn_basename}.log'
-    if os.path.exists("run.log"):
-        shutil.copyfile('run.log', output_log_path)
+    if os.path.exists("pge_run.log"):
+        shutil.copyfile('pge_run.log', output_log_path)
 
     # Generate STAC
     catalog = pystac.Catalog(id=rdn_basename,
