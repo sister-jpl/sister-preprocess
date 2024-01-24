@@ -8,4 +8,5 @@ echo "Creating runconfig"
 python ${pge_dir}/generate_runconfig.py "${@:1}"
 
 echo "Running L1 Preprocess PGE"
-python ${pge_dir}/preprocess.py runconfig.json > pge_run.log 2>&1
+
+python ${pge_dir}/preprocess.py runconfig.json

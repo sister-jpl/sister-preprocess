@@ -9,6 +9,7 @@ Author: Adam Chlus
 
 import datetime as dt
 import glob
+import logging
 import os
 import shutil
 import sys
@@ -28,6 +29,17 @@ from sister.utils import download_file
 
 def main():
 
+    # Set up console logging using root logger
+    logging.basicConfig(format="%(asctime)s %(levelname)s: %(message)s", level=logging.INFO)
+    logger = logging.getLogger("sister-preprocess")
+    # Set up file handler logging
+    handler = logging.FileHandler("pge_run.log")
+    handler.setLevel(logging.INFO)
+    formatter = logging.Formatter("%(asctime)s %(levelname)s [%(module)s]: %(message)s")
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    logger.info("Starting preprocess.py")
+
     pge_path = os.path.dirname(os.path.realpath(__file__))
 
     run_config_json = sys.argv[1]
@@ -45,6 +57,7 @@ def main():
     aws_cop_url='https://copernicus-dem-30m.s3.amazonaws.com/'
 
     if base_name.startswith('PRS'):
+        logger.info("Preprocessing PRISMA data")
 
         smile = f'{pge_path}/data/prisma/PRISMA_Mali1_wavelength_shift_surface_smooth.npz'
         rad_coeff = f'{pge_path}/data/prisma/PRS_Mali1_radcoeff_surface.npz'
@@ -76,6 +89,7 @@ def main():
         sensor = 'PRISMA'
 
     elif base_name.startswith('ang') or base_name.startswith('f'):
+        logger.info("Preprocessing AVIRIS data")
         aviris.preprocess(run_config['inputs']['raw_dataset'],
                             'output/',
                             'temp/',
@@ -84,6 +98,7 @@ def main():
         sensor = os.path.basename(l1p_dir).split('_')[1]
 
     elif base_name.startswith('DESIS'):
+        logger.info("Preprocessing DESIS data")
         desis.l1c_process(run_config['inputs']['raw_dataset'],
                             'output/',
                             'temp/',
@@ -98,7 +113,7 @@ def main():
         sensor = 'DESIS'
 
     elif base_name.startswith('EMIT'):
-
+        logger.info("Preprocessing EMIT data")
         emit_directory = os.path.dirname(run_config['inputs']['raw_dataset'])
         obs_base_name = base_name.replace('RAD','OBS')
         obs_url = f'{emit_directory}/{obs_base_name}'
@@ -116,7 +131,7 @@ def main():
                             crid = str(run_config['inputs']['crid']))
         sensor = 'EMIT'
     else:
-        print("Unrecognized input sensor")
+        logger.info("Unrecognized input sensor")
 
     #Rename DESIS and PRISMA output files
     if sensor in ['PRISMA','DESIS']:
@@ -197,7 +212,7 @@ def main():
     # save the catalog
     catalog.describe()
     catalog.save(catalog_type=pystac.CatalogType.SELF_CONTAINED)
-    print("Catalog HREF: ", catalog.get_self_href())
+    logger.info("Catalog HREF: ", catalog.get_self_href())
     # print("Item HREF: ", item.get_self_href())
 
     # Move the assets from the output directory to the stac item directories and create empty .met.json files
