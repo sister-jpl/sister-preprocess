@@ -212,7 +212,7 @@ def main():
     # save the catalog
     catalog.describe()
     catalog.save(catalog_type=pystac.CatalogType.SELF_CONTAINED)
-    logger.info("Catalog HREF: ", catalog.get_self_href())
+    print("Catalog HREF: ", catalog.get_self_href())
     # print("Item HREF: ", item.get_self_href())
 
     # Move the assets from the output directory to the stac item directories and create empty .met.json files
