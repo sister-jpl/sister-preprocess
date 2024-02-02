@@ -18,14 +18,28 @@ def main():
     """
 
     parser = argparse.ArgumentParser(description='Parse inputs to create runconfig.json')
-    parser.add_argument('--raw_dataset', help='Path to raw dataset')
+    parser.add_argument('--radiance_data', help='Path to radiance data file')
+    parser.add_argument('--radiance_header', help='Path to radiance header file')
+    parser.add_argument('--observation_data', help='Path to observation data file')
+    parser.add_argument('--observation_header', help='Path to observation header file')
+    parser.add_argument('--location_data', help='Path to location data file')
+    parser.add_argument('--location_header', help='Path to location header file')
+    parser.add_argument('--glt_data', help='Path to GLT data file')
+    parser.add_argument('--glt_header', help='Path to GLT header file')
     parser.add_argument('--crid', help='CRID value', default="000")
     parser.add_argument('--experimental', help='If true then designates data as experiemntal', default="True")
     args = parser.parse_args()
 
     run_config = {
         "inputs": {
-            "raw_dataset": args.raw_dataset,
+            "radiance_data": args.radiance_data,
+            "radiance_header": args.radiance_header,
+            "observation_data": args.observation_data,
+            "observation_header": args.observation_header,
+            "location_data": args.location_data,
+            "location_header": args.location_header,
+            "glt_data": args.glt_data,
+            "glt_header": args.glt_header,
             "crid": args.crid
         }
     }
