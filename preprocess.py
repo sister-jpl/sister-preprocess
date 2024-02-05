@@ -47,7 +47,7 @@ def main():
     with open(run_config_json, 'r') as in_file:
         run_config = json.load(in_file)
 
-    base_name = os.path.basename(run_config['inputs']['radiance_data'])
+    base_name = os.path.basename(run_config['inputs']['raw_dataset'])
 
     experimental = run_config['inputs']['experimental']
 
@@ -62,7 +62,7 @@ def main():
         smile = f'{pge_path}/data/prisma/PRISMA_Mali1_wavelength_shift_surface_smooth.npz'
         rad_coeff = f'{pge_path}/data/prisma/PRS_Mali1_radcoeff_surface.npz'
 
-        landsat_directory = os.path.dirname(run_config['inputs']['radiance_data']).replace('raw', 'landsat_reference')
+        landsat_directory = os.path.dirname(run_config['inputs']['raw_dataset']).replace('raw', 'landsat_reference')
         landsat_url=f'{landsat_directory}/PRS_{base_name[16:50]}_landsat.tar.gz'
         os.mkdir('input')
         landsat_tar = 'input/%s' % os.path.basename(landsat_url)
@@ -75,7 +75,7 @@ def main():
 
         landsat = landsat_tar[:-7]
 
-        prisma.he5_to_envi(run_config['inputs']['radiance_data'],
+        prisma.he5_to_envi(run_config['inputs']['raw_dataset'],
                             'output/',
                             'temp/',
                             aws_cop_url,
@@ -90,22 +90,16 @@ def main():
 
     elif base_name.startswith('ang') or base_name.startswith('f'):
         logger.info("Preprocessing AVIRIS data")
-        rdn_file = run_config['inputs']['radiance_data']
-        obs_ort_file = run_config['inputs']['observation_data']
-        loc_file = run_config['inputs']['location_data']
-        glt_file = run_config['inputs']['glt_data']
-        aviris.preprocess(rdn_file,
-                          obs_ort_file,
-                          loc_file,
-                          glt_file,
-                          'output/',
-                          res = 30)
+        aviris.preprocess(run_config['inputs']['raw_dataset'],
+                            'output/',
+                            'temp/',
+                            res = 30)
         l1p_dir = glob.glob('output/S*')[0]
         sensor = os.path.basename(l1p_dir).split('_')[1]
 
     elif base_name.startswith('DESIS'):
         logger.info("Preprocessing DESIS data")
-        desis.l1c_process(run_config['inputs']['radiance_data'],
+        desis.l1c_process(run_config['inputs']['raw_dataset'],
                             'output/',
                             'temp/',
                             aws_cop_url)
@@ -120,7 +114,7 @@ def main():
 
     elif base_name.startswith('EMIT'):
         logger.info("Preprocessing EMIT data")
-        emit_directory = os.path.dirname(run_config['inputs']['radiance_data'])
+        emit_directory = os.path.dirname(run_config['inputs']['raw_dataset'])
         obs_base_name = base_name.replace('RAD','OBS')
         obs_url = f'{emit_directory}/{obs_base_name}'
         os.mkdir('input')
@@ -129,7 +123,7 @@ def main():
         download_file(obs_nc,
                       obs_url)
 
-        emit.nc_to_envi(run_config['inputs']['radiance_data'],
+        emit.nc_to_envi(run_config['inputs']['raw_dataset'],
                             'output/',
                             'temp/',
                             obs_file = obs_nc,

@@ -87,88 +87,73 @@ EMIT datasets are first converted to ENVI formatted files and then projected to 
 
 ## PGE Arguments
 
-The L1 preprocess PGE takes the following arguments:
+In addition to required MAAP job submission arguments the L1 preprocess PGE also takes the following arguments:
 
 
-| Argument           | Description                          | Default |
-|--------------------|--------------------------------------|---------|
-| radiance_data      | URL to input radiance data file      | -       |
-| radiance_header    | URL to input radiance header         | None    |
-| observation_data   | URL to input observation data file   | None    |
-| observation_header | URL to input observation header      | None    |
-| location_data      | URL to input location data file      | None    |
-| location_header    | URL to input location header         | None    |
-| glt_data           | URL to input GLT data file           | None    |
-| glt_header         | URL to input GLT header              | None    |
-| crid               | Composite release identifier         | '000'   |
-| experimental       | Designates outputs as "experimental" | 'True'  |
+|Argument| Type |  Description | Default|
+|---|---|---|---|
+| raw_dataset| file |URL to input raw dataset granule| -|
+| crid| config | Composite release identifier| '000'|
 
 ## Outputs
 
 The outputs of the L1B preprocess PGE use the following naming convention:
 
-     (EXPERIMENTAL-)SISTER_<SENSOR>_L1B_RDN_<YYYYMMDDTHHMMSS>_<CRID>_<SUBPRODUCT>
+    SISTER_<SENSOR>_L1B_RDN_<YYYYMMDDTHHMMSS>_<CRID>_<SUBPRODUCT>
 
-Note that the "EXPERIMENTAL-" prefix is optional and is only added when the "experimental" flag is set to True.
-
-The following data products are produced:
-
-| Product description                     | Units                             | Example filename                                            |
-|-----------------------------------------|-----------------------------------|-------------------------------------------------------------|
-| ENVI Radiance datacube                  | μW/cm<sup>2</sup>/sr              | SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001                |
-| ENVI Radiance header file               | -                                 | SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.hdr            |
-| ENVI Radiance metadata (STAC formatted) | -                                 | SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.json           |
-| False color radiance quicklook          | -                                 | SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.png            |
-| ENVI Location datacube                  | -                                 | SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_LOC.bin        |
-| 1. WGS-84 longitude                     | decimal degrees                   |                                                             |
-| 2. WGS-84 latitude                      | decimal degrees                   |                                                             |
-| 3. Ground elevation                     | meters                            |                                                             |
-| ENVI Location header file               | -                                 | SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_LOC.hdr        |
-| ENVI Location metadata (STAC formatted) | -                                 | SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_LOC.json       |
-| ENVI Observation datacube               | -                                 | SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_OBS.bin        |
-| 1. path length                          | meters                            |                                                             |
-| 2. to-sensor-azimuth                    | 0 to 360 degrees clockwise N      |                                                             |
-| 3. to-sensor-zenith                     | 0 to 90 degrees from zenith       |                                                             |
-| 4. to-sun-azimuth                       | 0 to 360 degrees clockwise N      |                                                             |
-| 5. to-sun-zenith                        | 0 to 90 degrees from zenith       |                                                             |
-| 6. solar phase                          | degrees                           |                                                             |
-| 7. slope                                | decimal degrees                   |                                                             |
-| 8. aspect                               | 0 to 360 degrees clockwise from N |                                                             |
-| 9. cosine i                             | unitless                          |                                                             |
-| 10. UTC time                            | decimal hours                     |                                                             |
-| 11. Earth-sun distance                  | astronomical unit                 |                                                             |
-| ENVI Observation header file            | -                                 | SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_OBS.hdr        |
-| Observation metadata (STAC formatted)   | -                                 | SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_OBS.json       |
-| PGE runconfig                           | -                                 | SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.runconfig.json |
-| PGE log                                 | -                                 | SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.log            |
+|Product description |  Units | Example filename
+|---|---|---|
+| ENVI Radiance datacube |μW/cm<sup>2</sup>/sr|   SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001 |
+| ENVI Radiance header file  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.hdr|
+| ENVI Radiance metadata  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.hdr|
+| False color radiance quicklook  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.png |
+| ENVI Location datacube |-|  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_LOC.bin |
+| 1. WGS-84 longitude |decimal degrees|
+| 2. WGS-84 latitude |decimal degrees|
+| 3. Ground elevation |meters|
+| ENVI Location header file  | - | SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_LOC.hdr |
+| ENVI Location metadata  | - | SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_LOC.met.json |
+| ENVI Observation datacube |-|  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_OBS.bin |
+| 1. path length |meters|
+| 2. to-sensor-azimuth |0 to 360 degrees clockwise N|
+| 3. to-sensor-zenith |0 to 90 degrees from zenith|
+| 4. to-sun-azimuth |0 to 360 degrees clockwise N|
+| 5. to-sun-zenith |0 to 90 degrees from zenith|
+| 6. solar phase |degrees|
+| 7. slope |decimal degrees|
+| 8. aspect |0 to 360 degrees clockwise from N|
+| 9. cosine i |unitless|
+| 10. UTC time |decimal hours|
+| 11. Earth-sun distance |astronomical unit|
+| ENVI Observation header file  | - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_OBS.hdr |
+| Observation metadata |-|  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001_OBS.met.json |
+| PGE runconfig| - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.runconfig.json |
+| PGE log| - |  SISTER\_AVNG\_L1B\_RDN\_20220502T180901\_001.log |
 
 
 File and band descriptions taken directly from [AVIRIS NG Data Product Readme]
 (https://avirisng.jpl.nasa.gov/dataportal/ANG_L1B_L2_Data_Product_Readme_v02.txt)
 
-Metadata files are [STAC formatted](https://stacspec.org/en) and compatible with tools in the [STAC ecosystem](https://stacindex.org/ecosystem).
 
-## Executing the Algorithm
+## Algorithm registration
 
-This algorithm requires [Anaconda Python](https://www.anaconda.com/download)
+This algorithm can be registered using the algorirthm_config.yml file found in this repository:
 
-To install and run the code, first clone the repository and execute the install script:
+	from maap.maap import MAAP
+	import IPython
+	
+	maap = MAAP(maap_host="sister-api.imgspec.org")
 
-    git clone https://github.com/sister-jpl/sister-preprocess.git
-    cd sister-preprocess
-    ./install.sh
-    cd ..
+	preprocess_alg_yaml = './sister-preprocess/algorithm_config.yaml'
+	maap.register_algorithm_from_yaml_file(file_path=preprocess_alg_yaml)
 
-Then, create a working directory and enter it:
+## Examples
 
-    mkdir WORK_DIR
-    cd WORK_DIR
-
-Copy input files to the work directory and run the code.  Note that there are two ways to call inputs.  If the input data is 
-a single file (in the case of EMIT, DESIS, or PRISMA) then just pass in the `--radiance_data` parameter and the input file:
-
-    ../sister-preprocess/pge_run.sh --radiance_data RADIANCE_FILE
-
-If the input data is composed of separate files (AVIRIS and AVIRIS-NG), then pass in each file separately:
-
-    ../sister-preprocess/pge_run.sh --radiance_data RADIANCE_DATA --radiance_header RADIANCE_HEADER --observation_data OBSERVATION_DATA --observation_header OBSERVATION_HEADER --location_data LOCATION_DATA --location_header LOCATION_HEADER --glt_data GLT_DATA --glt_header GLT_HEADER
+	l1p_job_response = maap.submitJob(algo_id="sister-l1_preprocess",
+							    version="2.1.0",
+							    raw_dataset= 'PRS_L1_STD_OFFL_20200917091806_20200917091810_0001.zip',
+							    crid='001',
+							    publish_to_cmr=False,
+							    cmr_metadata={},
+							    queue="sister-job_worker-16gb",
+							    identifier="SISTER_PRISMA_L1B_RDN_20170827T175432_001")

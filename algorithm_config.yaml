@@ -16,30 +16,9 @@ run_command: sister-preprocess/pge_run.sh
 disk_space: 50GB
 inputs:
   file:
-    - name: radiance_data
-      description: The input radiance file. This can be an archived radiance file (e.g. tar.gz) or an ENVI binary file.
+    - name: raw_dataset
+      description:
       required: True
-    - name: radiance_header
-      description: The radiance header file (only used if radiance_data points to an ENVI file)
-      default: None
-    - name: observation_data
-      description: The observation data file (only used if radiance_data points to an ENVI file)
-      default: None
-    - name: observation_header
-      description: The observation header file (only used if radiance_data points to an ENVI file)
-      default: None
-    - name: location_data
-      description: The location data file (only used if radiance_data points to an ENVI file)
-      default: None
-    - name: location_header
-      description: The location header file (only used if radiance_data points to an ENVI file)
-      default: None
-    - name: glt_data
-      description: The GLT data file (only used if radiance_data points to an ENVI file)
-      default: None
-    - name: glt_header
-      description: The GLT header file (only used if radiance_data points to an ENVI file)
-      default: None
   config:
     - name: crid
       data_type:
